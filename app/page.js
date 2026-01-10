@@ -68,7 +68,7 @@ export default function CotizadorProfesional() {
           </div>
         </div>
 
-        {/* Cliente - En pantalla input, al imprimir texto */}
+        {/* Cliente */}
         <div style={{ padding: '0.75rem', backgroundColor: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
           <div className="screen-only">
             <input
@@ -86,15 +86,14 @@ export default function CotizadorProfesional() {
 
         {/* Tabla */}
         <div style={{ padding: '0 0.75rem' }}>
-          {/* Headers */}
           <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
             <thead>
               <tr style={{ backgroundColor: '#dc2626', color: 'white' }}>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '30px' }}>#</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'left' }}>DESCRIPCIÓN</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '50px' }}>CANT.</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '60px' }}>P.U.</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '70px' }}>TOTAL</th>
+                <th style={{ padding: '0.3rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'center', width: '22px' }}>#</th>
+                <th style={{ padding: '0.3rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'left', width: '48%' }}>DESCRIPCIÓN</th>
+                <th style={{ padding: '0.3rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'center', width: '38px' }}>CANT.</th>
+                <th style={{ padding: '0.3rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'center', width: '45px' }}>P.U.</th>
+                <th style={{ padding: '0.3rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'center', width: '58px' }}>TOTAL</th>
               </tr>
             </thead>
             <tbody>
@@ -108,56 +107,56 @@ export default function CotizadorProfesional() {
                 <>
                   {items.map((item, index) => (
                     <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                      <td style={{ padding: '0.5rem', textAlign: 'center', fontSize: '0.75rem', fontWeight: 600, color: '#6b7280', border: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '0.4rem', textAlign: 'center', fontSize: '0.7rem', fontWeight: 600, color: '#6b7280', border: '1px solid #e5e7eb' }}>
                         {index + 1}
                       </td>
                       
-                      <td style={{ padding: '0.5rem', border: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '0.3rem', border: '1px solid #e5e7eb' }}>
                         <input
                           type="text"
                           value={item.descripcion}
                           onChange={(e) => actualizarItem(index, 'descripcion', e.target.value)}
                           className="screen-only"
-                          style={{ width: '100%', padding: '0.375rem', fontSize: '0.875rem', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
+                          style={{ width: '100%', padding: '0.4rem', fontSize: '0.85rem', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
                           placeholder="Producto"
                         />
                         <span className="print-only" style={{ fontSize: '0.75rem' }}>{item.descripcion}</span>
                       </td>
                       
-                      <td style={{ padding: '0.5rem', textAlign: 'center', border: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '0.3rem', textAlign: 'center', border: '1px solid #e5e7eb' }}>
                         <input
                           type="number"
                           value={item.cantidad}
                           onChange={(e) => actualizarItem(index, 'cantidad', e.target.value)}
                           className="screen-only"
-                          style={{ width: '100%', padding: '0.25rem', fontSize: '0.75rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
+                          style={{ width: '100%', padding: '0.3rem', fontSize: '0.7rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
                           min="0"
                         />
                         <span className="print-only" style={{ fontSize: '0.75rem' }}>{item.cantidad}</span>
                       </td>
                       
-                      <td style={{ padding: '0.5rem', textAlign: 'center', border: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '0.3rem', textAlign: 'center', border: '1px solid #e5e7eb' }}>
                         <input
                           type="number"
                           value={item.precioUnitario}
                           onChange={(e) => actualizarItem(index, 'precioUnitario', e.target.value)}
                           className="screen-only"
-                          style={{ width: '100%', padding: '0.25rem', fontSize: '0.75rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
+                          style={{ width: '100%', padding: '0.3rem', fontSize: '0.7rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
                           min="0"
                           step="0.01"
                         />
                         <span className="print-only" style={{ fontSize: '0.75rem' }}>{item.precioUnitario.toFixed(2)}</span>
                       </td>
                       
-                      <td style={{ padding: '0.5rem', textAlign: 'center', border: '1px solid #e5e7eb' }}>
-                        <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', justifyContent: 'center' }}>
-                          <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#dc2626' }}>
+                      <td style={{ padding: '0.3rem', textAlign: 'center', border: '1px solid #e5e7eb' }}>
+                        <div style={{ display: 'flex', gap: '0.15rem', alignItems: 'center', justifyContent: 'center' }}>
+                          <span style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#dc2626' }}>
                             {item.total.toFixed(2)}
                           </span>
                           <button
                             onClick={() => eliminarItem(index)}
                             className="screen-only"
-                            style={{ padding: '0.125rem 0.25rem', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', lineHeight: 1 }}
+                            style={{ padding: '0.1rem 0.2rem', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', lineHeight: 1 }}
                           >
                             ✕
                           </button>
@@ -169,11 +168,11 @@ export default function CotizadorProfesional() {
                   {items.length < 8 && (
                     [...Array(8 - items.length)].map((_, i) => (
                       <tr key={`empty-${i}`}>
-                        <td style={{ padding: '1rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
-                        <td style={{ padding: '1rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
-                        <td style={{ padding: '1rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
-                        <td style={{ padding: '1rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
-                        <td style={{ padding: '1rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
+                        <td style={{ padding: '0.85rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
+                        <td style={{ padding: '0.85rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
+                        <td style={{ padding: '0.85rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
+                        <td style={{ padding: '0.85rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
+                        <td style={{ padding: '0.85rem', border: '1px solid #e5e7eb' }}>&nbsp;</td>
                       </tr>
                     ))
                   )}
@@ -196,7 +195,7 @@ export default function CotizadorProfesional() {
           <p style={{ color: 'white', fontWeight: 600, fontSize: '0.875rem', margin: 0 }}>¡Gracias por su Preferencia!</p>
         </div>
 
-        {/* Controles - Solo en pantalla */}
+        {/* Controles */}
         <div className="screen-only" style={{ padding: '0.75rem', backgroundColor: '#f3f4f6' }}>
           <button
             onClick={agregarItem}
