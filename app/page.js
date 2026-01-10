@@ -85,16 +85,16 @@ export default function CotizadorProfesional() {
         </div>
 
         {/* Tabla */}
-        <div style={{ padding: '0 0.75rem', overflowX: 'auto' }}>
+        <div style={{ padding: '0 0.75rem' }}>
           {/* Headers */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', minWidth: '600px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
             <thead>
               <tr style={{ backgroundColor: '#dc2626', color: 'white' }}>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '40px' }}>#</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'left', minWidth: '200px' }}>DESCRIPCIÓN</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '70px' }}>CANT.</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '90px' }}>P. UNITARIO</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '100px' }}>TOTAL</th>
+                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '30px' }}>#</th>
+                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'left' }}>DESCRIPCIÓN</th>
+                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '50px' }}>CANT.</th>
+                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '60px' }}>P.U.</th>
+                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '70px' }}>TOTAL</th>
               </tr>
             </thead>
             <tbody>
@@ -112,7 +112,7 @@ export default function CotizadorProfesional() {
                         {index + 1}
                       </td>
                       
-                      <td style={{ padding: '0.5rem', border: '1px solid #e5e7eb', minWidth: '200px' }}>
+                      <td style={{ padding: '0.5rem', border: '1px solid #e5e7eb' }}>
                         <input
                           type="text"
                           value={item.descripcion}
@@ -130,7 +130,7 @@ export default function CotizadorProfesional() {
                           value={item.cantidad}
                           onChange={(e) => actualizarItem(index, 'cantidad', e.target.value)}
                           className="screen-only"
-                          style={{ width: '100%', padding: '0.375rem', fontSize: '0.875rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
+                          style={{ width: '100%', padding: '0.25rem', fontSize: '0.75rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
                           min="0"
                         />
                         <span className="print-only" style={{ fontSize: '0.75rem' }}>{item.cantidad}</span>
@@ -142,7 +142,7 @@ export default function CotizadorProfesional() {
                           value={item.precioUnitario}
                           onChange={(e) => actualizarItem(index, 'precioUnitario', e.target.value)}
                           className="screen-only"
-                          style={{ width: '100%', padding: '0.375rem', fontSize: '0.875rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
+                          style={{ width: '100%', padding: '0.25rem', fontSize: '0.75rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
                           min="0"
                           step="0.01"
                         />
@@ -151,7 +151,7 @@ export default function CotizadorProfesional() {
                       
                       <td style={{ padding: '0.5rem', textAlign: 'center', border: '1px solid #e5e7eb' }}>
                         <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', justifyContent: 'center' }}>
-                          <span style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#dc2626' }}>
+                          <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#dc2626' }}>
                             {item.total.toFixed(2)}
                           </span>
                           <button
