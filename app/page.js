@@ -85,15 +85,15 @@ export default function CotizadorProfesional() {
         </div>
 
         {/* Tabla */}
-        <div style={{ padding: '0 0.75rem' }}>
+        <div style={{ padding: '0 0.75rem', overflowX: 'auto' }}>
           {/* Headers */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', minWidth: '600px' }}>
             <thead>
               <tr style={{ backgroundColor: '#dc2626', color: 'white' }}>
                 <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '40px' }}>#</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'left' }}>DESCRIPCIÓN</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '80px' }}>CANT.</th>
-                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '100px' }}>P. UNITARIO</th>
+                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'left', minWidth: '200px' }}>DESCRIPCIÓN</th>
+                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '70px' }}>CANT.</th>
+                <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '90px' }}>P. UNITARIO</th>
                 <th style={{ padding: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold', textAlign: 'center', width: '100px' }}>TOTAL</th>
               </tr>
             </thead>
@@ -112,13 +112,13 @@ export default function CotizadorProfesional() {
                         {index + 1}
                       </td>
                       
-                      <td style={{ padding: '0.5rem', border: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '0.5rem', border: '1px solid #e5e7eb', minWidth: '200px' }}>
                         <input
                           type="text"
                           value={item.descripcion}
                           onChange={(e) => actualizarItem(index, 'descripcion', e.target.value)}
                           className="screen-only"
-                          style={{ width: '100%', padding: '0.25rem', fontSize: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
+                          style={{ width: '100%', padding: '0.375rem', fontSize: '0.875rem', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
                           placeholder="Producto"
                         />
                         <span className="print-only" style={{ fontSize: '0.75rem' }}>{item.descripcion}</span>
@@ -130,7 +130,7 @@ export default function CotizadorProfesional() {
                           value={item.cantidad}
                           onChange={(e) => actualizarItem(index, 'cantidad', e.target.value)}
                           className="screen-only"
-                          style={{ width: '100%', padding: '0.25rem', fontSize: '0.75rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
+                          style={{ width: '100%', padding: '0.375rem', fontSize: '0.875rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
                           min="0"
                         />
                         <span className="print-only" style={{ fontSize: '0.75rem' }}>{item.cantidad}</span>
@@ -142,7 +142,7 @@ export default function CotizadorProfesional() {
                           value={item.precioUnitario}
                           onChange={(e) => actualizarItem(index, 'precioUnitario', e.target.value)}
                           className="screen-only"
-                          style={{ width: '100%', padding: '0.25rem', fontSize: '0.75rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
+                          style={{ width: '100%', padding: '0.375rem', fontSize: '0.875rem', textAlign: 'center', border: '1px solid #d1d5db', borderRadius: '0.25rem', outline: 'none' }}
                           min="0"
                           step="0.01"
                         />
@@ -151,7 +151,7 @@ export default function CotizadorProfesional() {
                       
                       <td style={{ padding: '0.5rem', textAlign: 'center', border: '1px solid #e5e7eb' }}>
                         <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', justifyContent: 'center' }}>
-                          <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#dc2626' }}>
+                          <span style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#dc2626' }}>
                             {item.total.toFixed(2)}
                           </span>
                           <button
@@ -200,20 +200,20 @@ export default function CotizadorProfesional() {
         <div className="screen-only" style={{ padding: '0.75rem', backgroundColor: '#f3f4f6' }}>
           <button
             onClick={agregarItem}
-            style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem', backgroundColor: 'white', border: '1px solid #d1d5db', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer', fontWeight: 500 }}
+            style={{ width: '100%', padding: '0.625rem', marginBottom: '0.5rem', backgroundColor: 'white', border: '1px solid #d1d5db', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer', fontWeight: 500 }}
           >
             + Agregar producto
           </button>
           
           <button
             onClick={nuevaCotizacion}
-            style={{ width: '100%', padding: '0.625rem', backgroundColor: '#1f2937', color: 'white', border: 'none', borderRadius: '0.25rem', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}
+            style={{ width: '100%', padding: '0.75rem', backgroundColor: '#1f2937', color: 'white', border: 'none', borderRadius: '0.25rem', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}
           >
             NUEVA COTIZACIÓN
           </button>
           
           <p style={{ textAlign: 'center', fontSize: '0.625rem', color: '#6b7280', margin: '0.5rem 0 0 0' }}>
-            📸 Presiona Ctrl+P para imprimir o guardar como PDF
+            📸 Presiona Compartir → Crear archivo PDF
           </p>
         </div>
       </div>
