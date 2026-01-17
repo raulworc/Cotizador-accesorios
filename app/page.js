@@ -41,6 +41,28 @@ export default function CotizadorProfesional() {
     window.print()
   }
 
+  const guardarPDF = () => {
+    // Genera nombre único: Cotizacion_000001_10-01-2026_ClienteNombre.pdf
+    const hoy = new Date()
+    const dia = String(hoy.getDate()).padStart(2, '0')
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0')
+    const año = hoy.getFullYear()
+    const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) || 'Cliente'
+    const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${nombreCliente}`
+    
+    // Cambiar título del documento temporalmente
+    const tituloOriginal = document.title
+    document.title = nombreArchivo
+    
+    // Abrir diálogo de impresión
+    window.print()
+    
+    // Restaurar título después de un momento
+    setTimeout(() => {
+      document.title = tituloOriginal
+    }, 1000)
+  }
+
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
       <div className="contenedor-principal" style={{ maxWidth: '1200px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
@@ -51,7 +73,7 @@ export default function CotizadorProfesional() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
               <div className="logo-container" style={{ backgroundColor: 'white', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center' }}>
                 <Image 
-                  src="/logo.png" 
+                  src="/logo.png.png" 
                   alt="Accesorios Rodrigo" 
                   width={180} 
                   height={60}
@@ -236,7 +258,7 @@ export default function CotizadorProfesional() {
 
         {/* Controles */}
         <div className="screen-only controles-container" style={{ padding: '1.2rem 1rem', backgroundColor: '#f1f5f9', borderTop: '1px solid #e2e8f0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.6rem', maxWidth: '600px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.6rem', maxWidth: '700px', margin: '0 auto' }}>
             <button
               onClick={agregarItem}
               style={{ padding: '0.75rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', borderRadius: '0.4rem', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 600 }}
@@ -244,19 +266,26 @@ export default function CotizadorProfesional() {
               + Agregar producto
             </button>
             
-            <div className="screen-only-desktop" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+            <div className="screen-only-desktop" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
               <button
                 onClick={imprimirPDF}
-                style={{ padding: '0.75rem', background: 'linear-gradient(135deg, #2d5a8c 0%, #1e3a5f 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 600 }}
+                style={{ padding: '0.75rem', background: 'linear-gradient(135deg, #2d5a8c 0%, #1e3a5f 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
               >
-                🖨️ Imprimir / PDF
+                🖨️ Imprimir
+              </button>
+
+              <button
+                onClick={guardarPDF}
+                style={{ padding: '0.75rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
+              >
+                💾 Guardar PDF
               </button>
               
               <button
                 onClick={nuevaCotizacion}
-                style={{ padding: '0.75rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 600 }}
+                style={{ padding: '0.75rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
               >
-                Nueva Cotización
+                🔄 Nueva
               </button>
             </div>
 
