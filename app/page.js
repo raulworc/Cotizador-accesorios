@@ -1,11 +1,16 @@
 'use client'
-import { useState } from 'react'
-import Image from 'next/image'
+import { useState, useEffect } from 'react'
 
 export default function CotizadorProfesional() {
   const [cliente, setCliente] = useState('')
   const [items, setItems] = useState([])
   const [proforma, setProforma] = useState('000001')
+  const [logoUrl, setLogoUrl] = useState('')
+
+  useEffect(() => {
+    // Cargar logo como base64
+    setLogoUrl('/logo.png.png')
+  }, [])
 
   const agregarItem = () => {
     setItems([...items, { cantidad: 1, descripcion: '', precioUnitario: 0, total: 0 }])
@@ -42,7 +47,6 @@ export default function CotizadorProfesional() {
   }
 
   const guardarPDF = () => {
-    // Genera nombre único: Cotizacion_000001_10-01-2026_ClienteNombre.pdf
     const hoy = new Date()
     const dia = String(hoy.getDate()).padStart(2, '0')
     const mes = String(hoy.getMonth() + 1).padStart(2, '0')
@@ -50,14 +54,11 @@ export default function CotizadorProfesional() {
     const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) || 'Cliente'
     const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${nombreCliente}`
     
-    // Cambiar título del documento temporalmente
     const tituloOriginal = document.title
     document.title = nombreArchivo
     
-    // Abrir diálogo de impresión
     window.print()
     
-    // Restaurar título después de un momento
     setTimeout(() => {
       document.title = tituloOriginal
     }, 1000)
@@ -71,15 +72,18 @@ export default function CotizadorProfesional() {
         <div style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1.5rem 1rem', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
-              <div className="logo-container" style={{ backgroundColor: 'white', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center' }}>
-                <Image 
-                  src="/logo.png.png" 
-                  alt="Accesorios Rodrigo" 
-                  width={180} 
-                  height={60}
-                  style={{ width: 'auto', height: '50px' }}
-                  priority
-                />
+              <div className="logo-container" style={{ backgroundColor: 'white', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', minHeight: '60px', justifyContent: 'center' }}>
+                {logoUrl ? (
+                  <img 
+                    src={logoUrl}
+                    alt="Accesorios Rodrigo" 
+                    style={{ width: 'auto', height: '50px', maxWidth: '180px' }}
+                  />
+                ) : (
+                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#1e3a5f', padding: '0 1rem' }}>
+                    ACCESORIOS RODRIGO
+                  </div>
+                )}
               </div>
               <div className="info-contacto" style={{ fontSize: '0.7rem', lineHeight: 1.4 }}>
                 <p style={{ margin: '0.2rem 0', opacity: 0.95 }}>📍 C. Central Km12.5 Lt 67, Ate, Lima</p>
@@ -211,57 +215,57 @@ export default function CotizadorProfesional() {
         </div>
 
         {/* Total + Validez */}
-        <div style={{ padding: '1.2rem 1rem', background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)', borderTop: '3px solid #2d5a8c' }}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1.5rem', marginBottom: '0.8rem' }}>
-            <span style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR</span>
-            <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2d5a8c' }}>S/ {totalGeneral.toFixed(2)}</span>
+        <div className="seccion-total" style={{ padding: '0.8rem 1rem', background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)', borderTop: '3px solid #2d5a8c' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+            <span className="texto-total" style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR</span>
+            <span className="monto-total" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2d5a8c' }}>S/ {totalGeneral.toFixed(2)}</span>
           </div>
-          <div style={{ textAlign: 'right', fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>
+          <div style={{ textAlign: 'right', fontSize: '0.7rem', color: '#64748b', marginTop: '0.3rem' }}>
             ⏰ Válido por 7 días
           </div>
         </div>
 
         {/* Descuentos Info */}
-        <div style={{ padding: '0.8rem 1rem', backgroundColor: '#eff6ff', borderTop: '1px solid #bfdbfe', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.8rem', color: '#1e3a5f', margin: 0, fontWeight: 500 }}>
+        <div style={{ padding: '0.6rem 1rem', backgroundColor: '#eff6ff', borderTop: '1px solid #bfdbfe', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.75rem', color: '#1e3a5f', margin: 0, fontWeight: 500 }}>
             💰 Descuentos por compras mayores a 10 unidades
           </p>
         </div>
 
-        {/* Información Bancaria - Solo PC */}
-        <div className="info-bancaria screen-only-desktop" style={{ padding: '1.2rem 1rem', backgroundColor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
-          <h3 style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#1e3a5f', marginBottom: '0.8rem', textAlign: 'center' }}>INFORMACIÓN BANCARIA</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.8rem' }}>
-            <div style={{ padding: '0.6rem', backgroundColor: 'white', borderRadius: '0.4rem', border: '1px solid #e2e8f0' }}>
-              <p style={{ fontSize: '0.7rem', color: '#64748b', margin: 0 }}>BCP Soles</p>
-              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', margin: '0.2rem 0 0 0' }}>19138313291092</p>
+        {/* Información Bancaria - Aparece en pantalla Y en PDF */}
+        <div className="info-bancaria" style={{ padding: '1rem', backgroundColor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+          <h3 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#1e3a5f', marginBottom: '0.6rem', textAlign: 'center' }}>INFORMACIÓN BANCARIA</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.6rem' }}>
+            <div style={{ padding: '0.5rem', backgroundColor: 'white', borderRadius: '0.3rem', border: '1px solid #e2e8f0' }}>
+              <p style={{ fontSize: '0.65rem', color: '#64748b', margin: 0 }}>BCP Soles</p>
+              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b', margin: '0.15rem 0 0 0' }}>19138313291092</p>
             </div>
-            <div style={{ padding: '0.6rem', backgroundColor: 'white', borderRadius: '0.4rem', border: '1px solid #e2e8f0' }}>
-              <p style={{ fontSize: '0.7rem', color: '#64748b', margin: 0 }}>BCP Interbancario</p>
-              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', margin: '0.2rem 0 0 0' }}>002-19113831329109257</p>
+            <div style={{ padding: '0.5rem', backgroundColor: 'white', borderRadius: '0.3rem', border: '1px solid #e2e8f0' }}>
+              <p style={{ fontSize: '0.65rem', color: '#64748b', margin: 0 }}>BCP Interbancario</p>
+              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b', margin: '0.15rem 0 0 0' }}>002-19113831329109257</p>
             </div>
-            <div style={{ padding: '0.6rem', backgroundColor: 'white', borderRadius: '0.4rem', border: '1px solid #e2e8f0' }}>
-              <p style={{ fontSize: '0.7rem', color: '#64748b', margin: 0 }}>BBVA</p>
-              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', margin: '0.2rem 0 0 0' }}>0011-0614-0200143068</p>
+            <div style={{ padding: '0.5rem', backgroundColor: 'white', borderRadius: '0.3rem', border: '1px solid #e2e8f0' }}>
+              <p style={{ fontSize: '0.65rem', color: '#64748b', margin: 0 }}>BBVA</p>
+              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b', margin: '0.15rem 0 0 0' }}>0011-0614-0200143068</p>
             </div>
-            <div style={{ padding: '0.6rem', backgroundColor: 'white', borderRadius: '0.4rem', border: '1px solid #e2e8f0' }}>
-              <p style={{ fontSize: '0.7rem', color: '#64748b', margin: 0 }}>Yape</p>
-              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', margin: '0.2rem 0 0 0' }}>964194540</p>
+            <div style={{ padding: '0.5rem', backgroundColor: 'white', borderRadius: '0.3rem', border: '1px solid #e2e8f0' }}>
+              <p style={{ fontSize: '0.65rem', color: '#64748b', margin: 0 }}>Yape</p>
+              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b', margin: '0.15rem 0 0 0' }}>964194540</p>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div style={{ padding: '1rem', background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', textAlign: 'center' }}>
-          <p style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.03em' }}>¡Gracias por su Preferencia!</p>
+        <div style={{ padding: '0.8rem', background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', textAlign: 'center' }}>
+          <p style={{ color: 'white', fontWeight: 600, fontSize: '0.85rem', margin: 0, letterSpacing: '0.03em' }}>¡Gracias por su Preferencia!</p>
         </div>
 
         {/* Controles */}
-        <div className="screen-only controles-container" style={{ padding: '1.2rem 1rem', backgroundColor: '#f1f5f9', borderTop: '1px solid #e2e8f0' }}>
+        <div className="screen-only controles-container" style={{ padding: '1rem', backgroundColor: '#f1f5f9', borderTop: '1px solid #e2e8f0' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.6rem', maxWidth: '700px', margin: '0 auto' }}>
             <button
               onClick={agregarItem}
-              style={{ padding: '0.75rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', borderRadius: '0.4rem', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 600 }}
+              style={{ padding: '0.7rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
             >
               + Agregar producto
             </button>
@@ -269,21 +273,21 @@ export default function CotizadorProfesional() {
             <div className="screen-only-desktop" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
               <button
                 onClick={imprimirPDF}
-                style={{ padding: '0.75rem', background: 'linear-gradient(135deg, #2d5a8c 0%, #1e3a5f 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
+                style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #2d5a8c 0%, #1e3a5f 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
               >
                 🖨️ Imprimir
               </button>
 
               <button
                 onClick={guardarPDF}
-                style={{ padding: '0.75rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
+                style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
               >
                 💾 Guardar PDF
               </button>
               
               <button
                 onClick={nuevaCotizacion}
-                style={{ padding: '0.75rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
+                style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
               >
                 🔄 Nueva
               </button>
@@ -292,12 +296,12 @@ export default function CotizadorProfesional() {
             <button
               onClick={nuevaCotizacion}
               className="screen-only-mobile"
-              style={{ padding: '0.75rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 600 }}
+              style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
             >
               Nueva Cotización
             </button>
             
-            <p className="screen-only-mobile" style={{ textAlign: 'center', fontSize: '0.7rem', color: '#64748b', margin: '0.4rem 0 0 0' }}>
+            <p className="screen-only-mobile" style={{ textAlign: 'center', fontSize: '0.65rem', color: '#64748b', margin: '0.3rem 0 0 0' }}>
               📸 Presiona Compartir → Crear archivo PDF
             </p>
           </div>
@@ -319,6 +323,7 @@ export default function CotizadorProfesional() {
           }
           .logo-container {
             padding: 0.3rem !important;
+            min-height: 45px !important;
           }
           .logo-container img {
             height: 35px !important;
@@ -336,6 +341,20 @@ export default function CotizadorProfesional() {
           .th-descripcion {
             font-size: 0.6rem !important;
             padding: 0.5rem 0.2rem !important;
+          }
+          /* Total más pequeño en móvil */
+          .seccion-total {
+            padding: 0.6rem 1rem !important;
+          }
+          .texto-total {
+            font-size: 0.75rem !important;
+          }
+          .monto-total {
+            font-size: 1.25rem !important;
+          }
+          /* Cuentas bancarias ocultas en móvil pantalla */
+          .info-bancaria {
+            display: none !important;
           }
         }
 
@@ -366,12 +385,18 @@ export default function CotizadorProfesional() {
             print-color-adjust: exact;
           }
           
-          .screen-only, .screen-only-desktop, .screen-only-mobile {
+          .screen-only, .screen-only-desktop, .screen-only-mobile, .controles-container {
             display: none !important;
           }
           
           .print-only {
             display: block !important;
+          }
+
+          /* Mostrar cuentas bancarias en PDF */
+          .info-bancaria {
+            display: block !important;
+            page-break-inside: avoid;
           }
           
           .contenedor-principal {
