@@ -8,8 +8,8 @@ export default function CotizadorProfesional() {
   const [logoUrl, setLogoUrl] = useState('')
 
   useEffect(() => {
-    // Cargar logo como base64
-    setLogoUrl('/logo.png.png')
+    // Cargar logo
+    setLogoUrl('/logo.png')
   }, [])
 
   const agregarItem = () => {
@@ -46,23 +46,46 @@ export default function CotizadorProfesional() {
     window.print()
   }
 
-  const guardarPDF = () => {
+const guardarPDF = () => {
+    // Generar timestamp único para evitar duplicados
     const hoy = new Date()
     const dia = String(hoy.getDate()).padStart(2, '0')
     const mes = String(hoy.getMonth() + 1).padStart(2, '0')
     const año = hoy.getFullYear()
-    const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) || 'Cliente'
-    const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${nombreCliente}`
+    const hora = String(hoy.getHours()).padStart(2, '0')
+    const minuto = String(hoy.getMinutes()).padStart(2, '0')
+    const segundo = String(hoy.getSeconds()).padStart(2, '0')
     
+    // Limpiar nombre del cliente (solo letras y números)
+    const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 15) || 'Cliente'
+    
+    // Formato: Cotizacion_000001_17-01-2026_14-30-25_JuanPerez
+    const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${hora}-${minuto}-${segundo}_${nombreCliente}`
+    
+    // Cambiar título del documento (esto sugiere el nombre al navegador)
     const tituloOriginal = document.title
     document.title = nombreArchivo
     
+    // Abrir diálogo de impresión/guardar
     window.print()
     
+    // Restaurar título después de 1 segundo
     setTimeout(() => {
       document.title = tituloOriginal
     }, 1000)
   }
+```
+
+---
+
+## ✅ **CÓMO FUNCIONARÁ:**
+
+**Cuando hagas clic en "💾 Guardar PDF":**
+
+1. Se abre el diálogo de impresión/guardar
+2. El nombre sugerido será algo como:
+```
+   Cotizacion_000001_17-01-2026_14-30-25_JuanPerez.pdf
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
@@ -78,6 +101,7 @@ export default function CotizadorProfesional() {
                     src={logoUrl}
                     alt="Accesorios Rodrigo" 
                     style={{ width: 'auto', height: '50px', maxWidth: '180px' }}
+                    onError={() => setLogoUrl('')}
                   />
                 ) : (
                   <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#1e3a5f', padding: '0 1rem' }}>
@@ -232,7 +256,7 @@ export default function CotizadorProfesional() {
           </p>
         </div>
 
-        {/* Información Bancaria - Aparece en pantalla Y en PDF */}
+        {/* Información Bancaria */}
         <div className="info-bancaria" style={{ padding: '1rem', backgroundColor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
           <h3 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#1e3a5f', marginBottom: '0.6rem', textAlign: 'center' }}>INFORMACIÓN BANCARIA</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.6rem' }}>
@@ -342,7 +366,6 @@ export default function CotizadorProfesional() {
             font-size: 0.6rem !important;
             padding: 0.5rem 0.2rem !important;
           }
-          /* Total más pequeño en móvil */
           .seccion-total {
             padding: 0.6rem 1rem !important;
           }
@@ -352,7 +375,6 @@ export default function CotizadorProfesional() {
           .monto-total {
             font-size: 1.25rem !important;
           }
-          /* Cuentas bancarias ocultas en móvil pantalla */
           .info-bancaria {
             display: none !important;
           }
@@ -393,7 +415,6 @@ export default function CotizadorProfesional() {
             display: block !important;
           }
 
-          /* Mostrar cuentas bancarias en PDF */
           .info-bancaria {
             display: block !important;
             page-break-inside: avoid;
