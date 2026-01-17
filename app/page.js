@@ -46,46 +46,23 @@ export default function CotizadorProfesional() {
     window.print()
   }
 
-const guardarPDF = () => {
-    // Generar timestamp único para evitar duplicados
+  const guardarPDF = () => {
     const hoy = new Date()
     const dia = String(hoy.getDate()).padStart(2, '0')
     const mes = String(hoy.getMonth() + 1).padStart(2, '0')
     const año = hoy.getFullYear()
-    const hora = String(hoy.getHours()).padStart(2, '0')
-    const minuto = String(hoy.getMinutes()).padStart(2, '0')
-    const segundo = String(hoy.getSeconds()).padStart(2, '0')
+    const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) || 'Cliente'
+    const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${nombreCliente}`
     
-    // Limpiar nombre del cliente (solo letras y números)
-    const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 15) || 'Cliente'
-    
-    // Formato: Cotizacion_000001_17-01-2026_14-30-25_JuanPerez
-    const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${hora}-${minuto}-${segundo}_${nombreCliente}`
-    
-    // Cambiar título del documento (esto sugiere el nombre al navegador)
     const tituloOriginal = document.title
     document.title = nombreArchivo
     
-    // Abrir diálogo de impresión/guardar
     window.print()
     
-    // Restaurar título después de 1 segundo
     setTimeout(() => {
       document.title = tituloOriginal
     }, 1000)
   }
-```
-
----
-
-## ✅ **CÓMO FUNCIONARÁ:**
-
-**Cuando hagas clic en "💾 Guardar PDF":**
-
-1. Se abre el diálogo de impresión/guardar
-2. El nombre sugerido será algo como:
-```
-   Cotizacion_000001_17-01-2026_14-30-25_JuanPerez.pdf
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
