@@ -7,7 +7,8 @@ export default function CotizadorProfesional() {
   const [proforma, setProforma] = useState('000001')
   const [logoUrl, setLogoUrl] = useState(logoBase64)
 
-
+const [logoUrl, setLogoUrl] = useState(logoBase64)
+console.log('Logo cargado:', logoUrl) // <-- Agrega esto
 
   const agregarItem = () => {
     setItems([...items, { cantidad: 1, descripcion: '', precioUnitario: 0, total: 0 }])
