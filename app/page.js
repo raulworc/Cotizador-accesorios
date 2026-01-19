@@ -5,11 +5,9 @@ export default function CotizadorProfesional() {
   const [cliente, setCliente] = useState('')
   const [items, setItems] = useState([])
   const [proforma, setProforma] = useState('000001')
-  const [logoUrl, setLogoUrl] = useState('')
+  const [logoUrl, setLogoUrl] = useState(logoBase64)
 
-  useEffect(() => {
-  setLogoUrl(logoBase64)
-}, [])
+
 
   const agregarItem = () => {
     setItems([...items, { cantidad: 1, descripcion: '', precioUnitario: 0, total: 0 }])
