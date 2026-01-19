@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-
+import { logoBase64 } from './logo'
 export default function CotizadorProfesional() {
   const [cliente, setCliente] = useState('')
   const [items, setItems] = useState([])
@@ -8,9 +8,8 @@ export default function CotizadorProfesional() {
   const [logoUrl, setLogoUrl] = useState('')
 
   useEffect(() => {
-    // Cargar logo
-    setLogoUrl('/logo.png')
-  }, [])
+  setLogoUrl(logoBase64)
+}, [])
 
   const agregarItem = () => {
     setItems([...items, { cantidad: 1, descripcion: '', precioUnitario: 0, total: 0 }])
