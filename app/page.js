@@ -1,418 +1,392 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { logoBase64 } from './logo'
-export default function CotizadorProfesional() {
-  const [cliente, setCliente] = useState('')
-  const [items, setItems] = useState([])
-  const [proforma, setProforma] = useState('000001')
-  const [logoUrl, setLogoUrl] = useState(logoBase64)
+'use client';
 
-console.log('Logo cargado:', logoUrl) // <-- Agrega esto
+import React, { useState } from 'react';
+import { Plus, Trash2, Download } from 'lucide-react';
 
-  const agregarItem = () => {
-    setItems([...items, { cantidad: 1, descripcion: '', precioUnitario: 0, total: 0 }])
-  }
+export default function InvoiceGenerator() {
+  const [formData, setFormData] = useState({
+    clientName: '',
+    clientAddress: '',
+    clientPhone: '',
+    clientEmail: '',
+    proformaNumber: '000001',
+    date: new Date().toISOString().split('T')[0],
+    validDays: '7'
+  });
 
-  const eliminarItem = (index) => {
-    setItems(items.filter((_, i) => i !== index))
-  }
+  const [items, setItems] = useState([]);
 
-  const actualizarItem = (index, campo, valor) => {
-    const nuevosItems = [...items]
-    nuevosItems[index][campo] = campo === 'cantidad' || campo === 'precioUnitario' ? parseFloat(valor) || 0 : valor
-    nuevosItems[index].total = nuevosItems[index].cantidad * nuevosItems[index].precioUnitario
-    setItems(nuevosItems)
-  }
+  const addItem = () => {
+    setItems([...items, { description: '', quantity: '', price: '' }]);
+  };
 
-  const totalGeneral = items.reduce((sum, item) => sum + item.total, 0)
+  const removeItem = (index) => {
+    setItems(items.filter((_, i) => i !== index));
+  };
 
-  const formatoFecha = () => {
-    const hoy = new Date()
-    const dia = String(hoy.getDate()).padStart(2, '0')
-    const mes = String(hoy.getMonth() + 1).padStart(2, '0')
-    const año = hoy.getFullYear()
-    return `${dia}/${mes}/${año}`
-  }
+  const updateItem = (index, field, value) => {
+    const newItems = [...items];
+    newItems[index][field] = value;
+    setItems(newItems);
+  };
 
-  const nuevaCotizacion = () => {
-    setCliente('')
-    setItems([])
-  }
+  const calculateTotal = () => {
+    return items.reduce((sum, item) => {
+      return sum + (parseFloat(item.quantity || 0) * parseFloat(item.price || 0));
+    }, 0);
+  };
 
-  const imprimirPDF = () => {
-    window.print()
-  }
-
-  const guardarPDF = () => {
-    const hoy = new Date()
-    const dia = String(hoy.getDate()).padStart(2, '0')
-    const mes = String(hoy.getMonth() + 1).padStart(2, '0')
-    const año = hoy.getFullYear()
-    const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) || 'Cliente'
-    const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${nombreCliente}`
+  const downloadPDF = async () => {
+    const element = document.getElementById('invoice-content');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+    const clientName = formData.clientName.replace(/\s+/g, '_').slice(0, 20) || 'cliente';
+    const filename = `factura_${clientName}_${timestamp}.pdf`;
     
-    const tituloOriginal = document.title
-    document.title = nombreArchivo
+    const opt = {
+      margin: 10,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
     
-    window.print()
-    
-    setTimeout(() => {
-      document.title = tituloOriginal
-    }, 1000)
-  }
+    try {
+      const worker = html2pdf().set(opt).from(element);
+      const pdf = await worker.outputPdf('arraybuffer');
+      
+      const blob = new Blob([pdf], { type: 'application/pdf' });
+      
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(blob, filename);
+      } else {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+        
+        document.body.appendChild(a);
+        a.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 250);
+      }
+      
+    } catch (error) {
+      console.error('Error generando PDF:', error);
+      alert('Error al generar el PDF. Por favor intenta de nuevo.');
+    }
+  };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-      <div className="contenedor-principal" style={{ maxWidth: '1200px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+    <div className="min-h-screen bg-gray-50 p-4">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+      
+      <style jsx global>{`
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          #invoice-content, #invoice-content * {
+            visibility: visible;
+          }
+          #invoice-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+          }
+          .no-print {
+            display: none !important;
+          }
+        }
         
-        {/* Header */}
-        <div style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1.5rem 1rem', color: 'white' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
-              <div className="logo-container" style={{ backgroundColor: 'white', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', minHeight: '60px', justifyContent: 'center' }}>
-                {logoUrl ? (
-                  <img 
-                    src={logoUrl}
-                    alt="Accesorios Rodrigo" 
-                    style={{ width: 'auto', height: '50px', maxWidth: '180px' }}
-                    onError={() => setLogoUrl('')}
-                  />
-                ) : (
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#1e3a5f', padding: '0 1rem' }}>
-                    ACCESORIOS RODRIGO
-                  </div>
-                )}
-              </div>
-              <div className="info-contacto" style={{ fontSize: '0.7rem', lineHeight: 1.4 }}>
-                <p style={{ margin: '0.2rem 0', opacity: 0.95 }}>📍 C. Central Km12.5 Lt 67, Ate, Lima</p>
-                <p style={{ margin: '0.2rem 0', opacity: 0.95 }}>📞 964194540 | ✉️ olga231702@gmail.com</p>
-              </div>
-            </div>
+        @media screen and (min-width: 768px) {
+          .desktop-layout {
+            display: flex;
+            gap: 2rem;
+          }
+          .desktop-form {
+            flex: 1;
+            max-width: 500px;
+          }
+          .desktop-preview {
+            flex: 1;
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+          }
+        }
+      `}</style>
+
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Generador de Cotizaciones</h1>
+        
+        <div className="desktop-layout">
+          {/* Formulario */}
+          <div className="desktop-form bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 className="text-xl font-semibold mb-4">Información del Cliente</h2>
             
-            <div className="cotizacion-header" style={{ textAlign: 'right' }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: 'bold', margin: 0, letterSpacing: '0.05em' }}>COTIZACIÓN</h2>
-              <p style={{ fontSize: '0.8rem', margin: '0.2rem 0', opacity: 0.9 }}>Fecha: {formatoFecha()}</p>
-              <p style={{ fontSize: '0.8rem', margin: 0, opacity: 0.9 }}>N° de Pro-forma: {proforma}</p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre del cliente
+                </label>
+                <input
+                  type="text"
+                  value={formData.clientName}
+                  onChange={(e) => setFormData({...formData, clientName: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Dirección
+                </label>
+                <input
+                  type="text"
+                  value={formData.clientAddress}
+                  onChange={(e) => setFormData({...formData, clientAddress: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Teléfono
+                </label>
+                <input
+                  type="text"
+                  value={formData.clientPhone}
+                  onChange={(e) => setFormData({...formData, clientPhone: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={formData.clientEmail}
+                  onChange={(e) => setFormData({...formData, clientEmail: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    N° Pro-forma
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.proformaNumber}
+                    onChange={(e) => setFormData({...formData, proformaNumber: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Fecha
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({...formData, date: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Válido por (días)
+                </label>
+                <input
+                  type="number"
+                  value={formData.validDays}
+                  onChange={(e) => setFormData({...formData, validDays: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Cliente */}
-        <div style={{ padding: '1rem', backgroundColor: '#f1f5f9', borderBottom: '2px solid #e2e8f0' }}>
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#1e3a5f', marginBottom: '0.4rem' }}>CLIENTE</label>
-          <div className="screen-only">
-            <input
-              type="text"
-              value={cliente}
-              onChange={(e) => setCliente(e.target.value)}
-              placeholder="Nombre del cliente"
-              style={{ width: '100%', padding: '0.6rem', fontSize: '0.9rem', fontWeight: 500, border: '2px solid #cbd5e1', borderRadius: '0.4rem', outline: 'none', backgroundColor: 'white' }}
-            />
-          </div>
-          <div className="print-only" style={{ fontSize: '0.95rem', fontWeight: 600, color: '#1e293b' }}>
-            {cliente || 'Nombre del cliente'}
-          </div>
-        </div>
+            <h2 className="text-xl font-semibold mt-6 mb-4">Productos/Servicios</h2>
+            
+            <div className="space-y-3">
+              {items.map((item, index) => (
+                <div key={index} className="flex gap-2 items-start">
+                  <input
+                    type="text"
+                    placeholder="Descripción"
+                    value={item.description}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Cant."
+                    value={item.quantity}
+                    onChange={(e) => updateItem(index, 'quantity', e.target.value)}
+                    className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Precio"
+                    value={item.price}
+                    onChange={(e) => updateItem(index, 'price', e.target.value)}
+                    className="w-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    onClick={() => removeItem(index)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-md"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
+              ))}
+            </div>
 
-        {/* Tabla */}
-        <div style={{ padding: '0 1rem 1rem 1rem' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', tableLayout: 'fixed', border: '2px solid #e2e8f0' }}>
-            <thead>
-              <tr style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', color: 'white' }}>
-                <th className="th-numero" style={{ padding: '0.6rem 0.2rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'center', width: '8%' }}>#</th>
-                <th className="th-descripcion" style={{ padding: '0.6rem 0.3rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'left', width: '42%' }}>DESCRIPCIÓN</th>
-                <th className="th-cantidad" style={{ padding: '0.6rem 0.2rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'center', width: '15%' }}>CANT.</th>
-                <th className="th-precio" style={{ padding: '0.6rem 0.2rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'center', width: '17%' }}>P.U.</th>
-                <th className="th-total" style={{ padding: '0.6rem 0.2rem', fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'center', width: '18%' }}>TOTAL</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.length === 0 ? (
-                <tr>
-                  <td colSpan="5" style={{ padding: '2.5rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem', backgroundColor: '#f8fafc' }}>
-                    Agregue productos a la cotización
-                  </td>
-                </tr>
-              ) : (
-                <>
-                  {items.map((item, index) => (
-                    <tr key={index} style={{ borderBottom: '1px solid #e2e8f0', backgroundColor: index % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
-                      <td style={{ padding: '0.6rem 0.2rem', textAlign: 'center', fontSize: '0.75rem', fontWeight: 600, color: '#475569', border: '1px solid #e2e8f0' }}>
-                        {index + 1}
-                      </td>
-                      
-                      <td style={{ padding: '0.4rem 0.3rem', border: '1px solid #e2e8f0' }}>
-                        <input
-                          type="text"
-                          value={item.descripcion}
-                          onChange={(e) => actualizarItem(index, 'descripcion', e.target.value)}
-                          className="screen-only input-tabla"
-                          style={{ width: '100%', padding: '0.4rem', fontSize: '0.8rem', border: '1px solid #cbd5e1', borderRadius: '0.3rem', outline: 'none', boxSizing: 'border-box' }}
-                          placeholder="Descripción del producto"
-                        />
-                        <span className="print-only" style={{ fontSize: '0.8rem', color: '#1e293b' }}>{item.descripcion}</span>
-                      </td>
-                      
-                      <td style={{ padding: '0.4rem 0.2rem', textAlign: 'center', border: '1px solid #e2e8f0' }}>
-                        <input
-                          type="number"
-                          value={item.cantidad}
-                          onChange={(e) => actualizarItem(index, 'cantidad', e.target.value)}
-                          className="screen-only input-tabla"
-                          style={{ width: '100%', padding: '0.4rem', fontSize: '0.75rem', textAlign: 'center', border: '1px solid #cbd5e1', borderRadius: '0.3rem', outline: 'none', boxSizing: 'border-box' }}
-                          min="0"
-                        />
-                        <span className="print-only" style={{ fontSize: '0.8rem', color: '#1e293b' }}>{item.cantidad}</span>
-                      </td>
-                      
-                      <td style={{ padding: '0.4rem 0.2rem', textAlign: 'center', border: '1px solid #e2e8f0' }}>
-                        <input
-                          type="number"
-                          value={item.precioUnitario}
-                          onChange={(e) => actualizarItem(index, 'precioUnitario', e.target.value)}
-                          className="screen-only input-tabla"
-                          style={{ width: '100%', padding: '0.4rem', fontSize: '0.75rem', textAlign: 'center', border: '1px solid #cbd5e1', borderRadius: '0.3rem', outline: 'none', boxSizing: 'border-box' }}
-                          min="0"
-                          step="0.01"
-                        />
-                        <span className="print-only" style={{ fontSize: '0.8rem', color: '#1e293b' }}>{item.precioUnitario.toFixed(2)}</span>
-                      </td>
-                      
-                      <td style={{ padding: '0.4rem 0.2rem', textAlign: 'center', border: '1px solid #e2e8f0' }}>
-                        <div style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', justifyContent: 'center' }}>
-                          <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#2d5a8c' }}>
-                            {item.total.toFixed(2)}
-                          </span>
-                          <button
-                            onClick={() => eliminarItem(index)}
-                            className="screen-only"
-                            style={{ padding: '0.1rem', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', lineHeight: 1 }}
-                          >
-                            ✕
-                          </button>
-                        </div>
+            <button
+              onClick={addItem}
+              className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              <Plus size={20} />
+              Agregar producto
+            </button>
+
+            <button
+              onClick={downloadPDF}
+              className="mt-6 w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-semibold"
+            >
+              <Download size={20} />
+              Guardar como PDF
+            </button>
+          </div>
+
+          {/* Vista Previa */}
+          <div className="desktop-preview">
+            <div id="invoice-content" className="bg-white rounded-lg shadow-md p-8">
+              {/* Encabezado */}
+              <div className="flex justify-between items-start mb-8">
+                <div className="bg-blue-900 text-white px-6 py-3 rounded">
+                  <h2 className="text-xl font-bold">ACCESORIOS</h2>
+                  <h2 className="text-xl font-bold">RODRIGO</h2>
+                </div>
+                <div className="text-right">
+                  <h1 className="text-2xl font-bold text-blue-900 mb-2">COTIZACIÓN</h1>
+                  <p className="text-sm text-gray-600">Fecha: {formData.date.split('-').reverse().join('/')}</p>
+                  <p className="text-sm text-gray-600">N° de Pro-forma: {formData.proformaNumber}</p>
+                </div>
+              </div>
+
+              {/* Información del Cliente */}
+              <div className="mb-6 p-4 bg-gray-50 rounded">
+                <h3 className="font-semibold text-gray-700 mb-2">CLIENTE</h3>
+                <p className="font-semibold">{formData.clientName || 'Nombre del cliente'}</p>
+                {formData.clientAddress && <p className="text-sm text-gray-600">{formData.clientAddress}</p>}
+                {formData.clientPhone && <p className="text-sm text-gray-600">Tel: {formData.clientPhone}</p>}
+                {formData.clientEmail && <p className="text-sm text-gray-600">{formData.clientEmail}</p>}
+              </div>
+
+              {/* Tabla de productos */}
+              <table className="w-full mb-6">
+                <thead>
+                  <tr className="bg-blue-900 text-white">
+                    <th className="text-left p-2 text-sm">#</th>
+                    <th className="text-left p-2 text-sm">DESCRIPCIÓN</th>
+                    <th className="text-center p-2 text-sm">CANT.</th>
+                    <th className="text-right p-2 text-sm">P.U.</th>
+                    <th className="text-right p-2 text-sm">TOTAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center py-8 text-gray-400">
+                        Agregue productos a la cotización
                       </td>
                     </tr>
-                  ))}
-                  
-                  {items.length < 8 && (
-                    [...Array(8 - items.length)].map((_, i) => (
-                      <tr key={`empty-${i}`} style={{ backgroundColor: (items.length + i) % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
-                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
-                        <td style={{ padding: '0.9rem 0.3rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
-                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
-                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
-                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
+                  ) : (
+                    items.map((item, index) => (
+                      <tr key={index} className="border-b">
+                        <td className="p-2 text-sm">{index + 1}</td>
+                        <td className="p-2 text-sm">{item.description}</td>
+                        <td className="p-2 text-sm text-center">{item.quantity}</td>
+                        <td className="p-2 text-sm text-right">S/ {parseFloat(item.price || 0).toFixed(2)}</td>
+                        <td className="p-2 text-sm text-right">
+                          S/ {(parseFloat(item.quantity || 0) * parseFloat(item.price || 0)).toFixed(2)}
+                        </td>
                       </tr>
                     ))
                   )}
-                </>
-              )}
-            </tbody>
-          </table>
-        </div>
+                </tbody>
+              </table>
 
-        {/* Total + Validez */}
-        <div className="seccion-total" style={{ padding: '0.8rem 1rem', background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)', borderTop: '3px solid #2d5a8c' }}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-            <span className="texto-total" style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR</span>
-            <span className="monto-total" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2d5a8c' }}>S/ {totalGeneral.toFixed(2)}</span>
-          </div>
-          <div style={{ textAlign: 'right', fontSize: '0.7rem', color: '#64748b', marginTop: '0.3rem' }}>
-            ⏰ Válido por 7 días
-          </div>
-        </div>
+              {/* Total */}
+              <div className="flex justify-end mb-6">
+                <div className="w-64 bg-blue-900 text-white p-4 rounded">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold">TOTAL A PAGAR</span>
+                    <span className="text-xl font-bold">S/ {calculateTotal().toFixed(2)}</span>
+                  </div>
+                  <p className="text-xs mt-2 text-blue-200">⏱️ Válido por {formData.validDays} días</p>
+                </div>
+              </div>
 
-        {/* Descuentos Info */}
-        <div style={{ padding: '0.6rem 1rem', backgroundColor: '#eff6ff', borderTop: '1px solid #bfdbfe', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.75rem', color: '#1e3a5f', margin: 0, fontWeight: 500 }}>
-            💰 Descuentos por compras mayores a 10 unidades
-          </p>
-        </div>
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-6">
+                <p className="text-sm text-yellow-800">
+                  🔥 Descuentos por compras mayores a 10 unidades
+                </p>
+              </div>
 
-        {/* Información Bancaria */}
-        <div className="info-bancaria" style={{ padding: '1rem', backgroundColor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
-          <h3 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#1e3a5f', marginBottom: '0.6rem', textAlign: 'center' }}>INFORMACIÓN BANCARIA</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.6rem' }}>
-            <div style={{ padding: '0.5rem', backgroundColor: 'white', borderRadius: '0.3rem', border: '1px solid #e2e8f0' }}>
-              <p style={{ fontSize: '0.65rem', color: '#64748b', margin: 0 }}>BCP Soles</p>
-              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b', margin: '0.15rem 0 0 0' }}>19138313291092</p>
+              {/* Información Bancaria */}
+              <div className="bg-gray-50 p-4 rounded mb-6">
+                <h3 className="font-semibold text-gray-700 mb-3">INFORMACIÓN BANCARIA</h3>
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <p className="font-semibold text-gray-600">BCP Soles</p>
+                    <p className="text-gray-700">19138313291092</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-600">BCP Interbancario</p>
+                    <p className="text-gray-700">002-19138313291092757</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-600">BBVA</p>
+                    <p className="text-gray-700">0011-0614-0200143068</p>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <p className="font-semibold text-gray-600">Yape</p>
+                  <p className="text-gray-700">964194540</p>
+                </div>
+              </div>
+
+              {/* Pie de página */}
+              <div className="text-center bg-blue-900 text-white py-3 rounded">
+                <p className="font-semibold">¡Gracias por su Preferencia!</p>
+              </div>
+
+              <div className="text-center text-xs text-gray-500 mt-4">
+                <p>https://cotizacion-accesorios.vercel.app</p>
+              </div>
             </div>
-            <div style={{ padding: '0.5rem', backgroundColor: 'white', borderRadius: '0.3rem', border: '1px solid #e2e8f0' }}>
-              <p style={{ fontSize: '0.65rem', color: '#64748b', margin: 0 }}>BCP Interbancario</p>
-              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b', margin: '0.15rem 0 0 0' }}>002-19113831329109257</p>
-            </div>
-            <div style={{ padding: '0.5rem', backgroundColor: 'white', borderRadius: '0.3rem', border: '1px solid #e2e8f0' }}>
-              <p style={{ fontSize: '0.65rem', color: '#64748b', margin: 0 }}>BBVA</p>
-              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b', margin: '0.15rem 0 0 0' }}>0011-0614-0200143068</p>
-            </div>
-            <div style={{ padding: '0.5rem', backgroundColor: 'white', borderRadius: '0.3rem', border: '1px solid #e2e8f0' }}>
-              <p style={{ fontSize: '0.65rem', color: '#64748b', margin: 0 }}>Yape</p>
-              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b', margin: '0.15rem 0 0 0' }}>964194540</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div style={{ padding: '0.8rem', background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', textAlign: 'center' }}>
-          <p style={{ color: 'white', fontWeight: 600, fontSize: '0.85rem', margin: 0, letterSpacing: '0.03em' }}>¡Gracias por su Preferencia!</p>
-        </div>
-
-        {/* Controles */}
-        <div className="screen-only controles-container" style={{ padding: '1rem', backgroundColor: '#f1f5f9', borderTop: '1px solid #e2e8f0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.6rem', maxWidth: '700px', margin: '0 auto' }}>
-            <button
-              onClick={agregarItem}
-              style={{ padding: '0.7rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
-            >
-              + Agregar producto
-            </button>
-            
-            <div className="screen-only-desktop" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
-              <button
-                onClick={imprimirPDF}
-                style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #2d5a8c 0%, #1e3a5f 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
-              >
-                🖨️ Imprimir
-              </button>
-
-              <button
-                onClick={guardarPDF}
-                style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
-              >
-                💾 Guardar PDF
-              </button>
-              
-              <button
-                onClick={nuevaCotizacion}
-                style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
-              >
-                🔄 Nueva
-              </button>
-            </div>
-
-            <button
-              onClick={nuevaCotizacion}
-              className="screen-only-mobile"
-              style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
-            >
-              Nueva Cotización
-            </button>
-            
-            <p className="screen-only-mobile" style={{ textAlign: 'center', fontSize: '0.65rem', color: '#64748b', margin: '0.3rem 0 0 0' }}>
-              📸 Presiona Compartir → Crear archivo PDF
-            </p>
           </div>
         </div>
       </div>
-
-      <style dangerouslySetInnerHTML={{__html: `
-        .input-tabla:focus {
-          border-color: #2d5a8c !important;
-          box-shadow: 0 0 0 2px rgba(45, 90, 140, 0.1);
-        }
-
-        @media (max-width: 768px) {
-          .screen-only-desktop {
-            display: none !important;
-          }
-          .screen-only-mobile {
-            display: block !important;
-          }
-          .logo-container {
-            padding: 0.3rem !important;
-            min-height: 45px !important;
-          }
-          .logo-container img {
-            height: 35px !important;
-          }
-          .info-contacto {
-            display: none !important;
-          }
-          .cotizacion-header h2 {
-            font-size: 1.25rem !important;
-          }
-          .th-numero, .th-cantidad, .th-precio, .th-total {
-            font-size: 0.6rem !important;
-            padding: 0.5rem 0.15rem !important;
-          }
-          .th-descripcion {
-            font-size: 0.6rem !important;
-            padding: 0.5rem 0.2rem !important;
-          }
-          .seccion-total {
-            padding: 0.6rem 1rem !important;
-          }
-          .texto-total {
-            font-size: 0.75rem !important;
-          }
-          .monto-total {
-            font-size: 1.25rem !important;
-          }
-          .info-bancaria {
-            display: none !important;
-          }
-        }
-
-        @media (min-width: 769px) {
-          .screen-only-desktop {
-            display: block !important;
-          }
-          .screen-only-mobile {
-            display: none !important;
-          }
-        }
-
-        @media screen {
-          .print-only {
-            display: none !important;
-          }
-        }
-        
-        @media print {
-          @page {
-            margin: 1cm;
-          }
-          
-          body { 
-            margin: 0; 
-            padding: 0;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          
-          .screen-only, .screen-only-desktop, .screen-only-mobile, .controles-container {
-            display: none !important;
-          }
-          
-          .print-only {
-            display: block !important;
-          }
-
-          .info-bancaria {
-            display: block !important;
-            page-break-inside: avoid;
-          }
-          
-          .contenedor-principal {
-            box-shadow: none !important;
-          }
-          
-          input {
-            border: none !important;
-            background: transparent !important;
-          }
-          
-          button {
-            display: none !important;
-          }
-        }
-        
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-          opacity: 1;
-        }
-      `}} />
     </div>
-  )
+  );
 }
