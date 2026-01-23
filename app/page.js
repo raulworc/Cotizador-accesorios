@@ -1,5 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
+
 import { logoBase64 } from './logo'
 export default function CotizadorProfesional() {
   const [cliente, setCliente] = useState('')
@@ -7,7 +10,6 @@ export default function CotizadorProfesional() {
   const [proforma, setProforma] = useState('000001')
   const [logoUrl, setLogoUrl] = useState(logoBase64)
 
-console.log('Logo cargado:', logoUrl) // <-- Agrega esto
 
   const agregarItem = () => {
     setItems([...items, { cantidad: 1, descripcion: '', precioUnitario: 0, total: 0 }])
@@ -43,27 +45,57 @@ console.log('Logo cargado:', logoUrl) // <-- Agrega esto
     window.print()
   }
 
-  const guardarPDF = () => {
-    const hoy = new Date()
-    const dia = String(hoy.getDate()).padStart(2, '0')
-    const mes = String(hoy.getMonth() + 1).padStart(2, '0')
-    const año = hoy.getFullYear()
-    const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) || 'Cliente'
-    const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${nombreCliente}`
-    
-    const tituloOriginal = document.title
-    document.title = nombreArchivo
-    
-    window.print()
-    
-    setTimeout(() => {
-      document.title = tituloOriginal
-    }, 1000)
+  const guardarPDF = async () => {
+  const hoy = new Date()
+  const dia = String(hoy.getDate()).padStart(2, '0')
+  const mes = String(hoy.getMonth() + 1).padStart(2, '0')
+  const año = hoy.getFullYear()
+
+  const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) || 'Cliente'
+  const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${nombreCliente}`
+
+
+  const input = document.getElementById('cotizacion-pdf')
+
+  if (!input) return
+
+  const canvas = await html2canvas(input, {
+    scale: 2,
+    backgroundColor: '#ffffff',
+  })
+
+  const imgData = canvas.toDataURL('image/png')
+  const pdf = new jsPDF('p', 'mm', 'a4')
+
+
+  const pdfWidth = pdf.internal.pageSize.getWidth()
+  const pdfHeight = pdf.internal.pageSize.getHeight()
+
+  const imgWidth = pdfWidth
+  const imgHeight = (canvas.height * imgWidth) / canvas.width
+
+  let heightLeft = imgHeight
+  let position = 0
+
+  pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
+  heightLeft -= pdfHeight
+
+  while (heightLeft > 0) {
+    position -= pdfHeight
+    pdf.addPage()
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
+    heightLeft -= pdfHeight
   }
+
+  pdf.save(`${nombreArchivo}.pdf`)
+}
+
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-      <div className="contenedor-principal" style={{ maxWidth: '1200px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+  <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1200px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+
+
         
         {/* Header */}
         <div style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1.5rem 1rem', color: 'white' }}>
