@@ -67,7 +67,8 @@ if (acciones) acciones.style.display = 'none'
 input.style.minHeight = 'auto'
 
 document.body.classList.add('pdf-mode')
-
+    await new Promise(r => setTimeout(r, 120))
+    
  const canvas = await html2canvas(input, {
   scale: 2,
   backgroundColor: '#ffffff',
@@ -90,26 +91,34 @@ const usableWidth = pdfWidth - margin * 2
 const usableHeight = pdfHeight - margin * 2
 
 // Tamaño por ancho (SIEMPRE debe caber)
-const imgWidth = usableWidth
-let imgHeight = (canvas.height * imgWidth) / canvas.width
+// === Escalar al máximo dentro de A4 SIN recortar ===
+const ratio = canvas.width / canvas.height
 
-// Si queda muy bajo, intentamos agrandar, pero SIN pasarnos del ancho
-const scaleToFillHeight = usableHeight / imgHeight
-const scaledWidth = imgWidth * scaleToFillHeight
+let imgWidth = usableWidth
+let imgHeight = imgWidth / ratio
 
-if (imgHeight < usableHeight && scaledWidth <= usableWidth) {
-  // podemos agrandar sin recortar
+// Si queda bajito, intentamos llenar por alto
+if (imgHeight < usableHeight) {
   imgHeight = usableHeight
+  imgWidth = imgHeight * ratio
 }
 
-// Centrar horizontalmente
+// Si al llenar por alto se pasa del ancho, regresamos a ancho
+if (imgWidth > usableWidth) {
+  imgWidth = usableWidth
+  imgHeight = imgWidth / ratio
+}
+
+// Centrar dentro de la hoja
 const x = margin + (usableWidth - imgWidth) / 2
+let position = margin
 
 let heightLeft = imgHeight
-let position = margin
 
 pdf.addImage(imgData, 'PNG', x, position, imgWidth, imgHeight)
 heightLeft -= usableHeight
+
+
 
 
 while (heightLeft > 0) {
@@ -271,17 +280,16 @@ input.style.minHeight = prevInputMinHeight
                     </tr>
                   ))}
                   
-                  {items.length < 8 && (
-                    [...Array(8 - items.length)].map((_, i) => (
-                      <tr key={`empty-${i}`} style={{ backgroundColor: (items.length + i) % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
-                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
-                        <td style={{ padding: '0.9rem 0.3rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
-                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
-                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
-                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
-                      </tr>
-                    ))
-                  )}
+     {Array.from({ length: Math.max(0, 12 - items.length) }).map((_, i) => (
+  <tr key={`empty-${i}`} className="fila-vacia">
+    <td style={{ height: '28px', border: '1px solid #e2e8f0' }}></td>
+    <td style={{ border: '1px solid #e2e8f0' }}></td>
+    <td style={{ border: '1px solid #e2e8f0' }}></td>
+    <td style={{ border: '1px solid #e2e8f0' }}></td>
+    <td style={{ border: '1px solid #e2e8f0' }}></td>
+  </tr>
+))}
+
                 </>
               )}
             </tbody>
@@ -460,6 +468,13 @@ body.pdf-mode .print-only {
 body.pdf-mode input {
   border: none !important;
   background: transparent !important;
+}
+
+/* Proporción A4 en pantalla SOLO cuando se genera el PDF */
+body.pdf-mode #cotizacion-pdf {
+  width: 794px;         /* A4 aprox a 96dpi */
+  max-width: none !important;
+  margin: 0 auto !important;
 }
 
         @media print {
