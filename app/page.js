@@ -82,18 +82,36 @@ const pdf = new jsPDF('p', 'mm', 'a4')
 const pdfWidth = pdf.internal.pageSize.getWidth()
 const pdfHeight = pdf.internal.pageSize.getHeight()
 
-const margin = 10
+const margin = 5
 const usableWidth = pdfWidth - margin * 2
 const usableHeight = pdfHeight - margin * 2
 
-const imgWidth = usableWidth
-const imgHeight = (canvas.height * imgWidth) / canvas.width
+// 1) Tamaño si lo metemos por ancho (como ahora)
+const imgWidthByW = usableWidth
+const imgHeightByW = (canvas.height * imgWidthByW) / canvas.width
+
+// 2) Tamaño si lo metemos por alto (para llenar la hoja)
+const imgHeightByH = usableHeight
+const imgWidthByH = (canvas.width * imgHeightByH) / canvas.height
+
+let imgWidth, imgHeight
+
+if (imgHeightByW < usableHeight) {
+  imgWidth = imgWidthByH
+  imgHeight = imgHeightByH
+} else {
+  imgWidth = imgWidthByW
+  imgHeight = imgHeightByW
+}
+
+const x = margin + (usableWidth - imgWidth) / 2
 
 let heightLeft = imgHeight
 let position = margin
 
-pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight)
+pdf.addImage(imgData, 'PNG', x, position, imgWidth, imgHeight)
 heightLeft -= usableHeight
+
 
 while (heightLeft > 0) {
   pdf.addPage()
