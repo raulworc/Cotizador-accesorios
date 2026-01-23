@@ -279,16 +279,6 @@ input.style.minHeight = prevInputMinHeight
                       </td>
                     </tr>
                   ))}
-                  
-     {Array.from({ length: Math.max(0, 12 - items.length) }).map((_, i) => (
-  <tr key={`empty-${i}`} className="fila-vacia">
-    <td style={{ height: '28px', border: '1px solid #e2e8f0' }}></td>
-    <td style={{ border: '1px solid #e2e8f0' }}></td>
-    <td style={{ border: '1px solid #e2e8f0' }}></td>
-    <td style={{ border: '1px solid #e2e8f0' }}></td>
-    <td style={{ border: '1px solid #e2e8f0' }}></td>
-  </tr>
-))}
 
                 </>
               )}
@@ -472,10 +462,9 @@ body.pdf-mode input {
 
 /* Proporción A4 en pantalla SOLO cuando se genera el PDF */
 body.pdf-mode #cotizacion-pdf {
-  width: 794px;         /* A4 aprox a 96dpi */
-  max-width: none !important;
-  margin: 0 auto !important;
+  min-height: 520px;   /* da cuerpo al documento sin usar filas falsas */
 }
+
 
         @media print {
           @page {
