@@ -58,6 +58,14 @@ export default function CotizadorProfesional() {
   const input = document.getElementById('cotizacion-pdf')
 
   if (!input) return
+    const acciones = document.getElementById('acciones')
+
+const prevAccionesDisplay = acciones?.style.display
+const prevInputMinHeight = input.style.minHeight
+
+if (acciones) acciones.style.display = 'none'
+input.style.minHeight = 'auto'
+
 
   const canvas = await html2canvas(input, {
   scale: 3,
@@ -94,6 +102,9 @@ while (heightLeft > 0) {
 }
 
 pdf.save(`${nombreArchivo}.pdf`)
+    if (acciones) acciones.style.display = prevAccionesDisplay || ''
+input.style.minHeight = prevInputMinHeight
+
 
 }
 
@@ -307,7 +318,8 @@ pdf.save(`${nombreArchivo}.pdf`)
               + Agregar producto
             </button>
             
-            <div className="screen-only-desktop" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
+           <div id="acciones" className="screen-only-desktop" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
+
               <button
                 onClick={imprimirPDF}
                 style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #2d5a8c 0%, #1e3a5f 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
