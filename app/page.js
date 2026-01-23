@@ -60,34 +60,41 @@ export default function CotizadorProfesional() {
   if (!input) return
 
   const canvas = await html2canvas(input, {
-    scale: 2,
-    backgroundColor: '#ffffff',
-  })
+  scale: 3,
+  backgroundColor: '#ffffff',
+  useCORS: true,
+  scrollX: 0,
+  scrollY: -window.scrollY,
+})
 
-  const imgData = canvas.toDataURL('image/png')
-  const pdf = new jsPDF('p', 'mm', 'a4')
+const imgData = canvas.toDataURL('image/png', 1.0)
+const pdf = new jsPDF('p', 'mm', 'a4')
 
+const pdfWidth = pdf.internal.pageSize.getWidth()
+const pdfHeight = pdf.internal.pageSize.getHeight()
 
-  const pdfWidth = pdf.internal.pageSize.getWidth()
-  const pdfHeight = pdf.internal.pageSize.getHeight()
+const margin = 10
+const usableWidth = pdfWidth - margin * 2
+const usableHeight = pdfHeight - margin * 2
 
-  const imgWidth = pdfWidth
-  const imgHeight = (canvas.height * imgWidth) / canvas.width
+const imgWidth = usableWidth
+const imgHeight = (canvas.height * imgWidth) / canvas.width
 
-  let heightLeft = imgHeight
-  let position = 0
+let heightLeft = imgHeight
+let position = margin
 
-  pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-  heightLeft -= pdfHeight
+pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight)
+heightLeft -= usableHeight
 
-  while (heightLeft > 0) {
-    position -= pdfHeight
-    pdf.addPage()
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-    heightLeft -= pdfHeight
-  }
+while (heightLeft > 0) {
+  pdf.addPage()
+  position = margin - (imgHeight - heightLeft)
+  pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight)
+  heightLeft -= usableHeight
+}
 
-  pdf.save(`${nombreArchivo}.pdf`)
+pdf.save(`${nombreArchivo}.pdf`)
+
 }
 
 
