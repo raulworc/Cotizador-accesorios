@@ -68,13 +68,16 @@ input.style.minHeight = 'auto'
 
 document.body.classList.add('pdf-mode')
 
-  const canvas = await html2canvas(input, {
-  scale: 3,
+ const canvas = await html2canvas(input, {
+  scale: 2,
   backgroundColor: '#ffffff',
   useCORS: true,
   scrollX: 0,
   scrollY: -window.scrollY,
+  windowWidth: input.scrollWidth,
+  windowHeight: input.scrollHeight
 })
+
 
 const imgData = canvas.toDataURL('image/png', 1.0)
 const pdf = new jsPDF('p', 'mm', 'a4')
@@ -86,24 +89,20 @@ const margin = 5
 const usableWidth = pdfWidth - margin * 2
 const usableHeight = pdfHeight - margin * 2
 
-// 1) Tamaño si lo metemos por ancho (como ahora)
-const imgWidthByW = usableWidth
-const imgHeightByW = (canvas.height * imgWidthByW) / canvas.width
+// Tamaño por ancho (SIEMPRE debe caber)
+const imgWidth = usableWidth
+let imgHeight = (canvas.height * imgWidth) / canvas.width
 
-// 2) Tamaño si lo metemos por alto (para llenar la hoja)
-const imgHeightByH = usableHeight
-const imgWidthByH = (canvas.width * imgHeightByH) / canvas.height
+// Si queda muy bajo, intentamos agrandar, pero SIN pasarnos del ancho
+const scaleToFillHeight = usableHeight / imgHeight
+const scaledWidth = imgWidth * scaleToFillHeight
 
-let imgWidth, imgHeight
-
-if (imgHeightByW < usableHeight) {
-  imgWidth = imgWidthByH
-  imgHeight = imgHeightByH
-} else {
-  imgWidth = imgWidthByW
-  imgHeight = imgHeightByW
+if (imgHeight < usableHeight && scaledWidth <= usableWidth) {
+  // podemos agrandar sin recortar
+  imgHeight = usableHeight
 }
 
+// Centrar horizontalmente
 const x = margin + (usableWidth - imgWidth) / 2
 
 let heightLeft = imgHeight
