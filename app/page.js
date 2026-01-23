@@ -66,6 +66,7 @@ const prevInputMinHeight = input.style.minHeight
 if (acciones) acciones.style.display = 'none'
 input.style.minHeight = 'auto'
 
+document.body.classList.add('pdf-mode')
 
   const canvas = await html2canvas(input, {
   scale: 3,
@@ -102,6 +103,8 @@ while (heightLeft > 0) {
 }
 
 pdf.save(`${nombreArchivo}.pdf`)
+    document.body.classList.remove('pdf-mode')
+
     if (acciones) acciones.style.display = prevAccionesDisplay || ''
 input.style.minHeight = prevInputMinHeight
 
@@ -200,7 +203,13 @@ input.style.minHeight = prevInputMinHeight
                           style={{ width: '100%', padding: '0.4rem', fontSize: '0.8rem', border: '1px solid #cbd5e1', borderRadius: '0.3rem', outline: 'none', boxSizing: 'border-box' }}
                           placeholder="Descripción del producto"
                         />
-                        <span className="print-only" style={{ fontSize: '0.8rem', color: '#1e293b' }}>{item.descripcion}</span>
+                    <span
+  className="print-only"
+  style={{ fontSize: '0.8rem', color: '#1e293b', display: 'block', whiteSpace: 'normal', wordBreak: 'break-word' }}
+>
+  {item.descripcion}
+</span>
+
                       </td>
                       
                       <td style={{ padding: '0.4rem 0.2rem', textAlign: 'center', border: '1px solid #e2e8f0' }}>
@@ -419,7 +428,23 @@ input.style.minHeight = prevInputMinHeight
             display: none !important;
           }
         }
-        
+        /* ===== MODO PDF ===== */
+body.pdf-mode .screen-only,
+body.pdf-mode .screen-only-desktop,
+body.pdf-mode .screen-only-mobile,
+body.pdf-mode #acciones {
+  display: none !important;
+}
+
+body.pdf-mode .print-only {
+  display: block !important;
+}
+
+body.pdf-mode input {
+  border: none !important;
+  background: transparent !important;
+}
+
         @media print {
           @page {
             margin: 1cm;
