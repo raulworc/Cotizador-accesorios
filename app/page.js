@@ -66,17 +66,10 @@ const guardarPDF = () => {
   window.print()
 }
 
-
-    if (acciones) acciones.style.display = prevAccionesDisplay || ''
-input.style.minHeight = prevInputMinHeight
-
-
-}
-
-
+  
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-  <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1200px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+   <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+ <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1200px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
 
 
         
@@ -451,3 +444,4 @@ body.pdf-mode #cotizacion-pdf {
     </div>
   )
 }
+
