@@ -66,6 +66,7 @@ const guardarPDF = () => {
   window.print()
 }
 
+
     if (acciones) acciones.style.display = prevAccionesDisplay || ''
 input.style.minHeight = prevInputMinHeight
 
