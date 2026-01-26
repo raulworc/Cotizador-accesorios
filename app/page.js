@@ -446,7 +446,7 @@ body.pdf-mode #cotizacion-pdf {
           opacity: 1;
           }
        `}
-</style>
+`}} />
      
     </div>
   )
