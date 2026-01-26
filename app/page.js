@@ -1,8 +1,5 @@
 'use client'
 import { useState } from 'react'
-import html2canvas from 'html2canvas'
-import jsPDF from 'jspdf'
-
 import { logoBase64 } from './logo'
 export default function CotizadorProfesional() {
   const [cliente, setCliente] = useState('')
@@ -45,7 +42,7 @@ export default function CotizadorProfesional() {
     window.print()
   }
 
-  const guardarPDF = async () => {
+const guardarPDF = () => {
   const hoy = new Date()
   const dia = String(hoy.getDate()).padStart(2, '0')
   const mes = String(hoy.getMonth() + 1).padStart(2, '0')
@@ -54,82 +51,20 @@ export default function CotizadorProfesional() {
   const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) || 'Cliente'
   const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${nombreCliente}`
 
+  const tituloOriginal = document.title
 
-  const input = document.getElementById('cotizacion-pdf')
+  document.body.classList.add('pdf-mode')
+  document.title = nombreArchivo
 
-  if (!input) return
-    const acciones = document.getElementById('acciones')
-
-const prevAccionesDisplay = acciones?.style.display
-const prevInputMinHeight = input.style.minHeight
-
-if (acciones) acciones.style.display = 'none'
-input.style.minHeight = 'auto'
-
-document.body.classList.add('pdf-mode')
-    await new Promise(r => setTimeout(r, 120))
-    
- const canvas = await html2canvas(input, {
-  scale: 2,
-  backgroundColor: '#ffffff',
-  useCORS: true,
-  scrollX: 0,
-  scrollY: -window.scrollY,
-  windowWidth: input.scrollWidth,
-  windowHeight: input.scrollHeight
-})
-
-
-const imgData = canvas.toDataURL('image/png', 1.0)
-const pdf = new jsPDF('p', 'mm', 'a4')
-
-const pdfWidth = pdf.internal.pageSize.getWidth()
-const pdfHeight = pdf.internal.pageSize.getHeight()
-
-const margin = 5
-const usableWidth = pdfWidth - margin * 2
-const usableHeight = pdfHeight - margin * 2
-
-// Tamaño por ancho (SIEMPRE debe caber)
-// === Escalar al máximo dentro de A4 SIN recortar ===
-const ratio = canvas.width / canvas.height
-
-let imgWidth = usableWidth
-let imgHeight = imgWidth / ratio
-
-// Si queda bajito, intentamos llenar por alto
-if (imgHeight < usableHeight) {
-  imgHeight = usableHeight
-  imgWidth = imgHeight * ratio
-}
-
-// Si al llenar por alto se pasa del ancho, regresamos a ancho
-if (imgWidth > usableWidth) {
-  imgWidth = usableWidth
-  imgHeight = imgWidth / ratio
-}
-
-// Centrar dentro de la hoja
-const x = margin + (usableWidth - imgWidth) / 2
-let position = margin
-
-let heightLeft = imgHeight
-
-pdf.addImage(imgData, 'PNG', x, position, imgWidth, imgHeight)
-heightLeft -= usableHeight
-
-
-
-
-while (heightLeft > 0) {
-  pdf.addPage()
-  position = margin - (imgHeight - heightLeft)
-  pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight)
-  heightLeft -= usableHeight
-}
-
-pdf.save(`${nombreArchivo}.pdf`)
+  const restore = () => {
+    document.title = tituloOriginal
     document.body.classList.remove('pdf-mode')
+    window.removeEventListener('afterprint', restore)
+  }
+
+  window.addEventListener('afterprint', restore)
+  window.print()
+}
 
     if (acciones) acciones.style.display = prevAccionesDisplay || ''
 input.style.minHeight = prevInputMinHeight
