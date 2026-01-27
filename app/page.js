@@ -438,8 +438,7 @@ body.pdf-mode #cotizacion-pdf {
         input[type="number"]::-webkit-outer-spin-button {
           opacity: 1;
           }
-       `}
-`}} />
+      `}} />
      
     </div>
   )
