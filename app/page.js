@@ -1,12 +1,30 @@
 'use client'
-import { useState } from 'react'
-import { logoBase64 } from './logo'
+import { useState, useEffect } from 'react'
+
 export default function CotizadorProfesional() {
   const [cliente, setCliente] = useState('')
   const [items, setItems] = useState([])
   const [proforma, setProforma] = useState('000001')
-  const [logoUrl, setLogoUrl] = useState(logoBase64)
+  const [editandoProforma, setEditandoProforma] = useState(false)
+  const [historial, setHistorial] = useState([])
+  const [mostrarHistorial, setMostrarHistorial] = useState(false)
+  const [logoUrl, setLogoUrl] = useState('')
 
+  // Cargar historial al iniciar
+  useEffect(() => {
+    setLogoUrl('/logo.png')
+    const historialGuardado = localStorage.getItem('historial_cotizaciones')
+    if (historialGuardado) {
+      setHistorial(JSON.parse(historialGuardado))
+    }
+    
+    // Auto-incrementar proforma basado en historial
+    const ultimaProforma = localStorage.getItem('ultima_proforma')
+    if (ultimaProforma) {
+      const numero = parseInt(ultimaProforma) + 1
+      setProforma(String(numero).padStart(6, '0'))
+    }
+  }, [])
 
   const agregarItem = () => {
     setItems([...items, { cantidad: 1, descripcion: '', precioUnitario: 0, total: 0 }])
@@ -33,45 +51,104 @@ export default function CotizadorProfesional() {
     return `${dia}/${mes}/${año}`
   }
 
+  const guardarEnHistorial = () => {
+    const cotizacion = {
+      id: Date.now(),
+      proforma,
+      cliente,
+      items: [...items],
+      total: totalGeneral,
+      fecha: new Date().toISOString()
+    }
+
+    const nuevoHistorial = [cotizacion, ...historial].slice(0, 10)
+    setHistorial(nuevoHistorial)
+    localStorage.setItem('historial_cotizaciones', JSON.stringify(nuevoHistorial))
+    localStorage.setItem('ultima_proforma', proforma)
+  }
+
+  const cargarCotizacion = (cotizacion) => {
+    setCliente(cotizacion.cliente)
+    setItems(cotizacion.items)
+    setProforma(cotizacion.proforma)
+    setMostrarHistorial(false)
+  }
+
   const nuevaCotizacion = () => {
+    if (items.length > 0 || cliente) {
+      if (!confirm('¿Estás seguro? Se perderán los datos de la cotización actual.')) {
+        return
+      }
+    }
+    
     setCliente('')
     setItems([])
+    
+    // Auto-incrementar número de proforma
+    const numero = parseInt(proforma) + 1
+    setProforma(String(numero).padStart(6, '0'))
   }
 
   const imprimirPDF = () => {
+    if (items.length === 0) {
+      alert('Agrega al menos un producto antes de imprimir')
+      return
+    }
+    
+    guardarEnHistorial()
     window.print()
   }
 
-const guardarPDF = () => {
-  const hoy = new Date()
-  const dia = String(hoy.getDate()).padStart(2, '0')
-  const mes = String(hoy.getMonth() + 1).padStart(2, '0')
-  const año = hoy.getFullYear()
+  const guardarPDF = () => {
+    if (items.length === 0) {
+      alert('Agrega al menos un producto antes de guardar')
+      return
+    }
+    
+    if (!cliente) {
+      alert('Ingresa el nombre del cliente antes de guardar')
+      return
+    }
 
-  const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) || 'Cliente'
-  const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${nombreCliente}`
+    guardarEnHistorial()
 
-  const tituloOriginal = document.title
-
-  document.body.classList.add('pdf-mode')
-  document.title = nombreArchivo
-
-  const restore = () => {
-    document.title = tituloOriginal
-    document.body.classList.remove('pdf-mode')
-    window.removeEventListener('afterprint', restore)
+    const hoy = new Date()
+    const dia = String(hoy.getDate()).padStart(2, '0')
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0')
+    const año = hoy.getFullYear()
+    const hora = String(hoy.getHours()).padStart(2, '0')
+    const minuto = String(hoy.getMinutes()).padStart(2, '0')
+    const segundo = String(hoy.getSeconds()).padStart(2, '0')
+    
+    const nombreCliente = cliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 15) || 'Cliente'
+    const nombreArchivo = `Cotizacion_${proforma}_${dia}-${mes}-${año}_${hora}-${minuto}-${segundo}_${nombreCliente}`
+    
+    const tituloOriginal = document.title
+    document.title = nombreArchivo
+    
+    window.print()
+    
+    setTimeout(() => {
+      document.title = tituloOriginal
+    }, 1000)
   }
 
-  window.addEventListener('afterprint', restore)
-  window.print()
-}
+  const cambiarProforma = () => {
+    setEditandoProforma(true)
+  }
 
-  
+  const guardarProforma = (e) => {
+    if (e.key === 'Enter' || e.type === 'blur') {
+      setEditandoProforma(false)
+      // Asegurar formato de 6 dígitos
+      const numero = parseInt(proforma) || 1
+      setProforma(String(numero).padStart(6, '0'))
+    }
+  }
+
   return (
-   <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
- <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1200px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-
-
+    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+      <div className="contenedor-principal" style={{ maxWidth: '1200px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
         {/* Header */}
         <div style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1.5rem 1rem', color: 'white' }}>
@@ -100,7 +177,30 @@ const guardarPDF = () => {
             <div className="cotizacion-header" style={{ textAlign: 'right' }}>
               <h2 style={{ fontSize: '2rem', fontWeight: 'bold', margin: 0, letterSpacing: '0.05em' }}>COTIZACIÓN</h2>
               <p style={{ fontSize: '0.8rem', margin: '0.2rem 0', opacity: 0.9 }}>Fecha: {formatoFecha()}</p>
-              <p style={{ fontSize: '0.8rem', margin: 0, opacity: 0.9 }}>N° de Pro-forma: {proforma}</p>
+              <div style={{ fontSize: '0.8rem', margin: 0, opacity: 0.9, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                <span>N° de Pro-forma:</span>
+                {editandoProforma ? (
+                  <input
+                    type="text"
+                    value={proforma}
+                    onChange={(e) => setProforma(e.target.value)}
+                    onKeyDown={guardarProforma}
+                    onBlur={guardarProforma}
+                    autoFocus
+                    style={{ width: '80px', padding: '0.2rem', fontSize: '0.8rem', textAlign: 'center', borderRadius: '0.25rem', border: '1px solid white' }}
+                  />
+                ) : (
+                  <span 
+                    onClick={cambiarProforma}
+                    className="screen-only"
+                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                    title="Clic para editar"
+                  >
+                    {proforma}
+                  </span>
+                )}
+                <span className="print-only">{proforma}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -158,13 +258,7 @@ const guardarPDF = () => {
                           style={{ width: '100%', padding: '0.4rem', fontSize: '0.8rem', border: '1px solid #cbd5e1', borderRadius: '0.3rem', outline: 'none', boxSizing: 'border-box' }}
                           placeholder="Descripción del producto"
                         />
-                    <span
-  className="print-only"
-  style={{ fontSize: '0.8rem', color: '#1e293b', display: 'block', whiteSpace: 'normal', wordBreak: 'break-word' }}
->
-  {item.descripcion}
-</span>
-
+                        <span className="print-only" style={{ fontSize: '0.8rem', color: '#1e293b' }}>{item.descripcion}</span>
                       </td>
                       
                       <td style={{ padding: '0.4rem 0.2rem', textAlign: 'center', border: '1px solid #e2e8f0' }}>
@@ -208,7 +302,18 @@ const guardarPDF = () => {
                       </td>
                     </tr>
                   ))}
-
+                  
+                  {items.length < 8 && (
+                    [...Array(8 - items.length)].map((_, i) => (
+                      <tr key={`empty-${i}`} style={{ backgroundColor: (items.length + i) % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
+                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
+                        <td style={{ padding: '0.9rem 0.3rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
+                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
+                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
+                        <td style={{ padding: '0.9rem 0.2rem', border: '1px solid #e2e8f0' }}>&nbsp;</td>
+                      </tr>
+                    ))
+                  )}
                 </>
               )}
             </tbody>
@@ -264,6 +369,48 @@ const guardarPDF = () => {
         {/* Controles */}
         <div className="screen-only controles-container" style={{ padding: '1rem', backgroundColor: '#f1f5f9', borderTop: '1px solid #e2e8f0' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.6rem', maxWidth: '700px', margin: '0 auto' }}>
+            
+            {/* Botón Historial */}
+            <button
+              onClick={() => setMostrarHistorial(!mostrarHistorial)}
+              className="screen-only-desktop"
+              style={{ padding: '0.7rem', backgroundColor: '#8b5cf6', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
+            >
+              📋 {mostrarHistorial ? 'Ocultar Historial' : `Ver Historial (${historial.length})`}
+            </button>
+
+            {/* Panel de Historial */}
+            {mostrarHistorial && historial.length > 0 && (
+              <div style={{ backgroundColor: 'white', border: '2px solid #8b5cf6', borderRadius: '0.4rem', padding: '1rem', maxHeight: '300px', overflowY: 'auto' }}>
+                <h4 style={{ margin: '0 0 0.75rem 0', color: '#1e3a5f', fontSize: '0.9rem' }}>Últimas Cotizaciones</h4>
+                {historial.map((cot) => (
+                  <div 
+                    key={cot.id}
+                    onClick={() => cargarCotizacion(cot)}
+                    style={{ 
+                      padding: '0.6rem', 
+                      marginBottom: '0.5rem', 
+                      backgroundColor: '#f8fafc', 
+                      borderRadius: '0.3rem', 
+                      cursor: 'pointer',
+                      border: '1px solid #e2e8f0',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#eff6ff'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem' }}>
+                      <span style={{ fontWeight: 600, color: '#1e3a5f' }}>#{cot.proforma} - {cot.cliente || 'Sin cliente'}</span>
+                      <span style={{ color: '#64748b' }}>{new Date(cot.fecha).toLocaleDateString()}</span>
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '0.25rem' }}>
+                      {cot.items.length} productos - S/ {cot.total.toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <button
               onClick={agregarItem}
               style={{ padding: '0.7rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
@@ -271,8 +418,7 @@ const guardarPDF = () => {
               + Agregar producto
             </button>
             
-           <div id="acciones" className="screen-only-desktop" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
-
+            <div className="screen-only-desktop" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
               <button
                 onClick={imprimirPDF}
                 style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #2d5a8c 0%, #1e3a5f 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
@@ -357,6 +503,8 @@ const guardarPDF = () => {
             display: none !important;
           }
         }
+
+        @media (min-
 
         @media (min-width: 769px) {
           .screen-only-desktop {
