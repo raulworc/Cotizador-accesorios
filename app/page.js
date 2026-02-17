@@ -288,145 +288,64 @@ const guardarPDF = () => {
                 onClick={nuevaCotizacion}
                 style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
               >
-               🔄 Nueva
+              🔄 Nueva
             </button>
           </div>
         </div>
       </div>
-    </div>
-  )
-}
-     <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{__html: `
         .input-tabla:focus {
           border-color: #2d5a8c !important;
           box-shadow: 0 0 0 2px rgba(45, 90, 140, 0.1);
         }
 
         @media (max-width: 768px) {
-          .screen-only-desktop {
-            display: none !important;
-          }
-          .screen-only-mobile {
-            display: block !important;
-          }
-          .logo-container {
-            padding: 0.3rem !important;
-            min-height: 45px !important;
-          }
-          .logo-container img {
-            height: 35px !important;
-          }
-          .cotizacion-header h2 {
-            font-size: 1.25rem !important;
-          }
-          .th-numero, .th-cantidad, .th-precio, .th-total {
-            font-size: 0.6rem !important;
-            padding: 0.5rem 0.15rem !important;
-          }
-          .th-descripcion {
-            font-size: 0.6rem !important;
-            padding: 0.5rem 0.2rem !important;
-          }
-          .seccion-total {
-            padding: 0.6rem 1rem !important;
-          }
-          .texto-total {
-            font-size: 0.75rem !important;
-          }
-          .monto-total {
-            font-size: 1.25rem !important;
-          }
-          .info-bancaria {
-            display: none !important;
-          }
+          .screen-only-desktop { display: none !important; }
+          .screen-only-mobile { display: block !important; }
+          .logo-container { padding: 0.3rem !important; min-height: 45px !important; }
+          .logo-container img { height: 35px !important; }
+          .cotizacion-header h2 { font-size: 1.25rem !important; }
+          .th-numero, .th-cantidad, .th-precio, .th-total { font-size: 0.6rem !important; padding: 0.5rem 0.15rem !important; }
+          .th-descripcion { font-size: 0.6rem !important; padding: 0.5rem 0.2rem !important; }
+          .seccion-total { padding: 0.6rem 1rem !important; }
+          .texto-total { font-size: 0.75rem !important; }
+          .monto-total { font-size: 1.25rem !important; }
+          .info-bancaria { display: none !important; }
         }
 
         @media (min-width: 769px) {
-          .screen-only-desktop {
-            display: block !important;
-          }
-          .screen-only-mobile {
-            display: none !important;
-          }
+          .screen-only-desktop { display: block !important; }
+          .screen-only-mobile { display: none !important; }
         }
 
         @media screen {
-          .print-only {
-            display: none !important;
-          }
+          .print-only { display: none !important; }
         }
+
         /* ===== MODO PDF ===== */
-        body.pdf-mode .info-contacto {
-  display: block !important;
-}
-body.pdf-mode .screen-only,
-body.pdf-mode .screen-only-desktop,
-body.pdf-mode .screen-only-mobile,
-body.pdf-mode #acciones {
-  display: none !important;
-}
-
-body.pdf-mode .print-only {
-  display: block !important;
-}
-
-body.pdf-mode input {
-  border: none !important;
-  background: transparent !important;
-}
-
-/* Proporción A4 en pantalla SOLO cuando se genera el PDF */
-body.pdf-mode #cotizacion-pdf {
-  min-height: 520px;   /* da cuerpo al documento sin usar filas falsas */
-}
-
+        body.pdf-mode .info-contacto { display: block !important; }
+        body.pdf-mode .screen-only,
+        body.pdf-mode .screen-only-desktop,
+        body.pdf-mode .screen-only-mobile,
+        body.pdf-mode #acciones { display: none !important; }
+        body.pdf-mode .print-only { display: block !important; }
+        body.pdf-mode input { border: none !important; background: transparent !important; }
+        body.pdf-mode #cotizacion-pdf { min-height: 520px; }
 
         @media print {
-          @page {
-            margin: 1cm;
-          }
-          
-          body { 
-            margin: 0; 
-            padding: 0;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          
-          .screen-only, .screen-only-desktop, .screen-only-mobile, .controles-container {
-            display: none !important;
-          }
-          
-          .print-only {
-            display: block !important;
-          }
-
-          .info-bancaria {
-            display: block !important;
-            page-break-inside: avoid;
-          }
-          
-          .contenedor-principal {
-            box-shadow: none !important;
-          }
-          
-          input {
-            border: none !important;
-            background: transparent !important;
-          }
-          
-          button {
-            display: none !important;
-          }
+          @page { margin: 1cm; }
+          body { margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .screen-only, .screen-only-desktop, .screen-only-mobile, .controles-container { display: none !important; }
+          .print-only { display: block !important; }
+          .info-bancaria { display: block !important; page-break-inside: avoid; }
+          .contenedor-principal { box-shadow: none !important; }
+          input { border: none !important; background: transparent !important; }
+          button { display: none !important; }
         }
         
         input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-          opacity: 1;
-          }
+        input[type="number"]::-webkit-outer-spin-button { opacity: 1; }
       `}} />
-     
     </div>
   )
 }
-
