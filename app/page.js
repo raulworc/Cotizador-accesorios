@@ -91,7 +91,7 @@ const guardarPDF = () => {
                   </div>
                 )}
               </div>
-              <div className="info-contacto" style={{ fontSize: '0.7rem', lineHeight: 1.4 }}>
+             <div className="info-contacto" style={{ fontSize: '0.7rem', lineHeight: 1.4, display: 'block' }}>
                 <p style={{ margin: '0.2rem 0', opacity: 0.95 }}>📍 C. Central Km12.5 Lt 67, Ate, Lima</p>
                 <p style={{ margin: '0.2rem 0', opacity: 0.95 }}>📞 964194540 | ✉️ olga231702@gmail.com</p>
               </div>
@@ -270,9 +270,9 @@ const guardarPDF = () => {
             >
               + Agregar producto
             </button>
-            
-           <div id="acciones" className="screen-only-desktop" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
-
+                .info-contacto {
+            display: none !important;
+          }
               <button
                 onClick={imprimirPDF}
                 style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #2d5a8c 0%, #1e3a5f 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
@@ -330,9 +330,6 @@ const guardarPDF = () => {
           .logo-container img {
             height: 35px !important;
           }
-          .info-contacto {
-            display: none !important;
-          }
           .cotizacion-header h2 {
             font-size: 1.25rem !important;
           }
@@ -373,6 +370,9 @@ const guardarPDF = () => {
           }
         }
         /* ===== MODO PDF ===== */
+        body.pdf-mode .info-contacto {
+  display: block !important;
+}
 body.pdf-mode .screen-only,
 body.pdf-mode .screen-only-desktop,
 body.pdf-mode .screen-only-mobile,
