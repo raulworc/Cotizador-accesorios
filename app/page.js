@@ -270,9 +270,6 @@ const guardarPDF = () => {
             >
               + Agregar producto
             </button>
-                .info-contacto {
-            display: none !important;
-          }
               <button
                 onClick={imprimirPDF}
                 style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #2d5a8c 0%, #1e3a5f 100%)', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
