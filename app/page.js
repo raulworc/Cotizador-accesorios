@@ -288,26 +288,15 @@ const guardarPDF = () => {
                 onClick={nuevaCotizacion}
                 style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}
               >
-                🔄 Nueva
-              </button>
-            </div>
-
-            <button
-              onClick={nuevaCotizacion}
-              className="screen-only-mobile"
-              style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
-            >
-              Nueva Cotización
+               🔄 Nueva
             </button>
-            
-            <p className="screen-only-mobile" style={{ textAlign: 'center', fontSize: '0.65rem', color: '#64748b', margin: '0.3rem 0 0 0' }}>
-              📸 Presiona Compartir → Crear archivo PDF
-            </p>
           </div>
         </div>
       </div>
-
-      <style dangerouslySetInnerHTML={{__html: `
+    </div>
+  )
+}
+     <style dangerouslySetInnerHTML={{__html: `
         .input-tabla:focus {
           border-color: #2d5a8c !important;
           box-shadow: 0 0 0 2px rgba(45, 90, 140, 0.1);
