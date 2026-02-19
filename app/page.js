@@ -70,7 +70,7 @@ export default function CotizadorProfesional() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', paddingBottom: '2rem' }}>
       <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
-        {/* Header con diseño original */}
+        {/* Header */}
         <div className="header-diseno" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1.5rem 1rem', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -104,38 +104,41 @@ export default function CotizadorProfesional() {
           <div className="print-only" style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#1e293b' }}>{cliente || '---'}</div>
         </div>
 
-        {/* Tabla Profesional */}
+        {/* Tabla con Espacios Ajustados */}
         <div style={{ padding: '1.5rem' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #e2e8f0' }}>
             <thead>
               <tr style={{ background: '#1e3a5f', color: 'white' }}>
-                <th style={{ padding: '0.8rem', width: '50px', border: '1px solid #2d5a8c' }}>#</th>
+                <th style={{ padding: '0.8rem', width: '70px', border: '1px solid #2d5a8c' }}>CANT.</th>
                 <th style={{ textAlign: 'left', padding: '0.8rem', border: '1px solid #2d5a8c' }}>DESCRIPCIÓN</th>
-                <th style={{ width: '100px', padding: '0.8rem', border: '1px solid #2d5a8c' }}>CANT.</th>
-                <th style={{ width: '130px', padding: '0.8rem', border: '1px solid #2d5a8c' }}>P.U.</th>
-                <th style={{ width: '140px', padding: '0.8rem', border: '1px solid #2d5a8c' }}>TOTAL</th>
+                <th style={{ width: '100px', padding: '0.8rem', border: '1px solid #2d5a8c' }}>P.U.</th>
+                <th style={{ width: '130px', padding: '0.8rem', border: '1px solid #2d5a8c' }}>TOTAL</th>
               </tr>
             </thead>
             <tbody>
               {items.length === 0 ? (
-                <tr><td colSpan="5" style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>Agregue productos</td></tr>
+                <tr><td colSpan="4" style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>Agregue productos</td></tr>
               ) : (
                 items.map((item, index) => (
                   <tr key={index} style={{ backgroundColor: index % 2 === 0 ? 'white' : '#f8fafc' }}>
-                    <td style={{ textAlign: 'center', padding: '0.6rem', border: '1px solid #e2e8f0', fontWeight: 'bold' }}>{index + 1}</td>
+                    <td style={{ textAlign: 'center', border: '1px solid #e2e8f0' }}>
+                      <input type="number" value={item.cantidad} onChange={(e) => actualizarItem(index, 'cantidad', e.target.value)} className="screen-only" style={{ width: '55px', padding: '0.5rem', textAlign: 'center', border: '1px solid #cbd5e1' }} />
+                      <span className="print-only">{item.cantidad}</span>
+                    </td>
                     <td style={{ padding: '0.4rem', border: '1px solid #e2e8f0' }}>
                       <input type="text" value={item.descripcion} onChange={(e) => actualizarItem(index, 'descripcion', e.target.value)} className="screen-only" style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: '0.3rem' }} />
                       <span className="print-only">{item.descripcion}</span>
                     </td>
                     <td style={{ textAlign: 'center', border: '1px solid #e2e8f0' }}>
-                      <input type="number" value={item.cantidad} onChange={(e) => actualizarItem(index, 'cantidad', e.target.value)} className="screen-only" style={{ width: '70px', padding: '0.5rem', textAlign: 'center' }} />
-                      <span className="print-only">{item.cantidad}</span>
-                    </td>
-                    <td style={{ textAlign: 'center', border: '1px solid #e2e8f0' }}>
-                      <input type="number" value={item.precioUnitario} onChange={(e) => actualizarItem(index, 'precioUnitario', e.target.value)} className="screen-only" style={{ width: '90px', padding: '0.5rem', textAlign: 'center' }} />
+                      <input type="number" value={item.precioUnitario} onChange={(e) => actualizarItem(index, 'precioUnitario', e.target.value)} className="screen-only" style={{ width: '80px', padding: '0.5rem', textAlign: 'center', border: '1px solid #cbd5e1' }} />
                       <span className="print-only">{item.precioUnitario.toFixed(2)}</span>
                     </td>
-                    <td style={{ textAlign: 'center', border: '1px solid #e2e8f0', fontWeight: 'bold', color: '#1e3a5f', fontSize: '1.1rem' }}>{item.total.toFixed(2)}</td>
+                    <td style={{ textAlign: 'center', border: '1px solid #e2e8f0', fontWeight: 'bold', color: '#1e3a5f', fontSize: '1.1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                        {item.total.toFixed(2)}
+                        <button onClick={() => eliminarItem(index)} className="screen-only" style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -149,7 +152,6 @@ export default function CotizadorProfesional() {
             <span style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR: </span>
             <span style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#2d5a8c' }}>S/ {totalGeneral.toFixed(2)}</span>
           </div>
-          
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem', fontSize: '0.75rem' }}>
             <div><b>BCP Soles:</b><br/>19138313291092</div>
             <div><b>BCP Inter:</b><br/>002-19113831329109257</div>
@@ -158,7 +160,7 @@ export default function CotizadorProfesional() {
           </div>
         </div>
 
-        {/* Controles en Pantalla */}
+        {/* Controles */}
         <div className="screen-only" style={{ padding: '1.5rem', backgroundColor: '#f1f5f9', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
           <button onClick={agregarItem} style={{ padding: '0.8rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', fontWeight: 'bold', cursor: 'pointer', borderRadius: '0.4rem' }}>+ Agregar producto</button>
           <button onClick={guardarPDF} style={{ padding: '0.8rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', fontWeight: 'bold', cursor: 'pointer', borderRadius: '0.4rem' }}>💾 Guardar PDF / Historial</button>
@@ -167,7 +169,7 @@ export default function CotizadorProfesional() {
         </div>
       </div>
 
-      {/* Sección Historial */}
+      {/* Historial */}
       <div className="screen-only" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
         <h3 style={{ borderBottom: '2px solid #1e3a5f', color: '#1e3a5f', paddingBottom: '0.5rem' }}>📋 Historial de Ventas</h3>
         <table style={{ width: '100%', marginTop: '1rem', fontSize: '0.9rem' }}>
@@ -196,8 +198,7 @@ export default function CotizadorProfesional() {
         @media print {
           @page { margin: 1cm; }
           body { 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             -webkit-print-color-adjust: exact !important; 
             print-color-adjust: exact !important; 
           }
@@ -208,8 +209,8 @@ export default function CotizadorProfesional() {
             color: white !important; 
             -webkit-print-color-adjust: exact !important; 
           }
-          th { background-color: #1e3a5f !important; color: white !important; }
-          table, th, td { border: 1px solid #e2e8f0 !important; }
+          th { background-color: #1e3a5f !important; color: white !important; border: 1px solid #2d5a8c !important; }
+          table, td { border: 1px solid #e2e8f0 !important; }
         }
         @media screen { .print-only { display: none !important; } }
       `}} />
