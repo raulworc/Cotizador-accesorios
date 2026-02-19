@@ -70,7 +70,6 @@ export default function CotizadorProfesional() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', paddingBottom: '2rem' }}>
       <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
-        {/* Header con diseño profesional */}
         <div className="header-diseno" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1rem', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -90,7 +89,6 @@ export default function CotizadorProfesional() {
           </div>
         </div>
 
-        {/* Sección Cliente */}
         <div style={{ padding: '0.8rem 1.2rem', backgroundColor: '#f1f5f9', borderBottom: '2px solid #e2e8f0' }}>
           <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', color: '#1e3a5f', marginBottom: '0.2rem' }}>CLIENTE</label>
           <input
@@ -104,7 +102,6 @@ export default function CotizadorProfesional() {
           <div className="print-only" style={{ fontSize: '1rem', fontWeight: 'bold', color: '#1e293b' }}>{cliente || '---'}</div>
         </div>
 
-        {/* Tabla */}
         <div style={{ padding: '1rem 1.5rem' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #e2e8f0' }}>
             <thead>
@@ -146,7 +143,6 @@ export default function CotizadorProfesional() {
           </table>
         </div>
 
-        {/* Footer (Neuromarketing + Validez) */}
         <div style={{ padding: '1rem 1.5rem', background: '#f8fafc', borderTop: '2px solid #2d5a8c' }}>
           <div style={{ textAlign: 'right', marginBottom: '0.2rem' }}>
             <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR: </span>
@@ -158,68 +154,15 @@ export default function CotizadorProfesional() {
           </div>
           
           <div className="cuentas-bancarias" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.8rem', borderTop: '1px solid #e2e8f0', paddingTop: '0.8rem' }}>
-            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Soles:</b><br/><span style={{ fontSize: '0.95rem' }}>19138313291092</span></div>
-            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Inter:</b><br/><span style={{ fontSize: '0.95rem' }}>002-19113831329109257</span></div>
-            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BBVA:</b><br/><span style={{ fontSize: '0.95rem' }}>0011-0614-0200143068</span></div>
-            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>Yape:</b><br/><span style={{ fontSize: '1.05rem', fontWeight: 'bold', color: '#1e3a5f' }}>964194540</span></div>
+            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Soles:</b><br/>19138313291092</div>
+            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Inter:</b><br/>002-19113831329109257</div>
+            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BBVA:</b><br/>0011-0614-0200143068</div>
+            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>Yape:</b><br/><span style={{ fontSize: '1.05rem', fontWeight: 'bold' }}>964194540</span></div>
           </div>
         </div>
 
-        {/* Controles */}
         <div className="screen-only" style={{ padding: '1.2rem', backgroundColor: '#f1f5f9', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-          <button onClick={agregarItem} style={{ padding: '0.7rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', fontWeight: 'bold', cursor: 'pointer', borderRadius: '0.4rem' }}>+ Agregar producto</button>
-          <button onClick={guardarPDF} style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', fontWeight: 'bold', cursor: 'pointer', borderRadius: '0.4rem' }}>💾 Guardar PDF / Historial</button>
-          <button onClick={nuevaCotizacion} style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem', cursor: 'pointer' }}>🔄 Nueva</button>
-          <button onClick={() => { if(confirm('¿Limpiar historial?')) { localStorage.removeItem('historial_rodrigo'); setHistorial([]); }}} style={{ padding: '0.7rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.4rem', cursor: 'pointer' }}>🗑️ Limpiar Historial</button>
-        </div>
-      </div>
-
-      {/* Historial */}
-      <div className="screen-only" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-        <h3 style={{ borderBottom: '2px solid #1e3a5f', color: '#1e3a5f', paddingBottom: '0.5rem' }}>📋 Historial de Ventas</h3>
-        <table style={{ width: '100%', marginTop: '1rem', fontSize: '0.9rem' }}>
-          <thead>
-            <tr style={{ textAlign: 'left', color: '#64748b', borderBottom: '2px solid #f1f5f9' }}>
-              <th style={{ padding: '0.5rem' }}>Proforma</th>
-              <th>Cliente</th>
-              <th>Fecha</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {historial.map((h, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                <td style={{ padding: '0.6rem' }}>{h.proforma}</td>
-                <td style={{ fontWeight: '500' }}>{h.cliente}</td>
-                <td>{h.fecha}</td>
-                <td style={{ fontWeight: 'bold', color: '#059669' }}>S/ {h.total}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <style dangerouslySetInnerHTML={{__html: `
-        @media print {
-          @page { margin: 1cm; }
-          body { 
-            margin: 0; padding: 0; 
-            -webkit-print-color-adjust: exact !important; 
-            print-color-adjust: exact !important; 
-          }
-          .screen-only { display: none !important; }
-          .print-only { display: block !important; }
-          .header-diseno { 
-            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%) !important; 
-            color: white !important; 
-            -webkit-print-color-adjust: exact !important; 
-          }
-          .cuentas-bancarias { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 0.5rem !important; }
-          th { background-color: #1e3a5f !important; color: white !important; border: 1px solid #2d5a8c !important; }
-          table, td { border: 1px solid #e2e8f0 !important; }
-        }
-        @media screen { .print-only { display: none !important; } }
-      `}} />
-    </div>
-  )
-}
+          <button onClick={agregarItem} style={{ padding: '0.7rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', fontWeight: 'bold', borderRadius: '0.4rem' }}>+ Agregar producto</button>
+          <button onClick={guardarPDF} style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', fontWeight: 'bold', borderRadius: '0.4rem' }}>💾 Guardar PDF / Historial</button>
+          <button onClick={nuevaCotizacion} style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem' }}>🔄 Nueva</button>
+          <button onClick={() => { if(confirm('¿Limpiar historial?')) { localStorage.removeItem('historial_rodrigo'); setHistorial([]); }}} style={{ padding: '0.7rem', backgroundColor: '#ef4444', color: 'white', border:
