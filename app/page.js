@@ -68,6 +68,7 @@ export default function CotizadorProfesional() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', paddingBottom: '2rem' }}>
+      {/* Contenedor Principal con sombra en pantalla */}
       <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
         {/* Header */}
@@ -84,7 +85,7 @@ export default function CotizadorProfesional() {
             </div>
             <div style={{ textAlign: 'right' }}>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 'bold', margin: 0, letterSpacing: '0.05em' }}>COTIZACIÓN</h2>
-              <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.9 }}>Fecha: {new Date().toLocaleDateString()}</p>
+              <p style={{ margin: 0, fontSize: '0.85rem' }}>Fecha: {new Date().toLocaleDateString()}</p>
               <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: 'bold' }}>N° de Pro-forma: {proforma}</p>
             </div>
           </div>
@@ -147,7 +148,7 @@ export default function CotizadorProfesional() {
         </div>
 
         {/* Footer */}
-        <div style={{ padding: '1rem 1.5rem', background: '#f8fafc', borderTop: '2px solid #2d5a8c' }}>
+        <div id="no-extra-content" style={{ padding: '1rem 1.5rem', background: '#f8fafc', borderTop: '2px solid #2d5a8c' }}>
           <div style={{ textAlign: 'right', marginBottom: '0.2rem' }}>
             <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR: </span>
             <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#2d5a8c' }}>S/ </span>
@@ -173,7 +174,8 @@ export default function CotizadorProfesional() {
         </div>
       </div>
 
-      <div className="screen-only historial-seccion" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white' }}>
+      {/* Historial - Oculto físicamente en impresión */}
+      <div className="screen-only historial-no-print" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white' }}>
         <h3 style={{ borderBottom: '2px solid #1e3a5f', color: '#1e3a5f' }}>📋 Historial de Ventas</h3>
         <table style={{ width: '100%', marginTop: '1rem', fontSize: '0.9rem' }}>
           <tbody>
@@ -190,17 +192,27 @@ export default function CotizadorProfesional() {
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
           @page { margin: 0; size: auto; }
-          body { margin: 1cm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-          .screen-only, .historial-seccion { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
+          html, body { height: 100%; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
+          .screen-only, .historial-no-print { 
+            display: none !important; 
+            visibility: hidden !important; 
+            height: 0 !important; 
+            overflow: hidden !important; 
+            margin: 0 !important; 
+            padding: 0 !important; 
+          }
           .print-only { display: block !important; }
           .contenedor-principal { 
-            box-shadow: none !important; 
+            box-shadow: none !important; /* ELIMINA LA SOMBRA EN IMPRESIÓN */
             margin: 0 !important; 
             width: 100% !important; 
-            max-width: none !important; 
+            max-width: none !important;
+            height: auto !important; 
+            padding: 1.5cm !important; 
           }
           .header-diseno { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%) !important; color: white !important; -webkit-print-color-adjust: exact; }
           th { background-color: #1e3a5f !important; color: white !important; -webkit-print-color-adjust: exact; }
+          #no-extra-content { page-break-after: avoid !important; }
         }
         @media screen { .print-only { display: none !important; } }
       `}} />
