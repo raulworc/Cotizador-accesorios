@@ -70,14 +70,14 @@ export default function CotizadorProfesional() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', paddingBottom: '2rem' }}>
       <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
-        {/* Header con diseño original */}
+        {/* Header ORIGINAL */}
         <div className="header-diseno" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1.2rem', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ backgroundColor: 'white', padding: '0.4rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center' }}>
                 <img src={logoUrl} alt="Accesorios Rodrigo" style={{ height: '55px', width: 'auto' }} />
               </div>
-              <div style={{ fontSize: '0.75rem', lineHeight: '1.4' }}>
+              <div className="info-contacto" style={{ fontSize: '0.75rem', lineHeight: '1.4' }}>
                 <p style={{ margin: 0 }}>📍 C. Central Km12.5 Lt 67, Ate, Lima</p>
                 <p style={{ margin: 0 }}>📞 964194540 | ✉️ olga231702@gmail.com</p>
               </div>
@@ -90,7 +90,7 @@ export default function CotizadorProfesional() {
           </div>
         </div>
 
-        {/* Sección Cliente */}
+        {/* Cliente ORIGINAL */}
         <div style={{ padding: '0.8rem 1.2rem', backgroundColor: '#f1f5f9', borderBottom: '2px solid #e2e8f0' }}>
           <label className="screen-only" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', color: '#1e3a5f', marginBottom: '0.2rem' }}>CLIENTE</label>
           <input
@@ -104,42 +104,42 @@ export default function CotizadorProfesional() {
           <div className="print-only" style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#1e293b' }}>CLIENTE: {cliente || '---'}</div>
         </div>
 
-        {/* Tabla - ARREGLO FINAL: Solo muestra input en pantalla o texto en papel, nunca ambos */}
+        {/* Tabla ORIGINAL */}
         <div style={{ padding: '1rem 1.5rem' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', border: '2.5px solid #1e3a5f' }}>
             <thead>
               <tr style={{ background: '#1e3a5f', color: 'white' }}>
-                <th style={{ padding: '0.7rem', width: '70px', border: '1.5px solid #2d5a8c', fontSize: '0.85rem' }}>CANT.</th>
-                <th style={{ textAlign: 'left', padding: '0.7rem', border: '1.5px solid #2d5a8c', fontSize: '0.85rem' }}>DESCRIPCIÓN</th>
-                <th style={{ width: '75px', padding: '0.7rem', border: '1.5px solid #2d5a8c', fontSize: '0.85rem' }}>P.U.</th>
-                <th style={{ width: '120px', padding: '0.7rem', border: '1.5px solid #2d5a8c', fontSize: '0.85rem' }}>TOTAL</th>
+                <th style={{ padding: '0.6rem', width: '70px', border: '1px solid #2d5a8c' }}>CANT.</th>
+                <th style={{ textAlign: 'left', padding: '0.6rem', border: '1px solid #2d5a8c' }}>DESCRIPCIÓN</th>
+                <th style={{ width: '75px', padding: '0.6rem', border: '1px solid #2d5a8c' }}>P.U.</th>
+                <th style={{ width: '120px', padding: '0.6rem', border: '1px solid #2d5a8c' }}>TOTAL</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item, index) => (
                 <tr key={index} style={{ backgroundColor: index % 2 === 0 ? 'white' : '#f8fafc' }}>
-                  <td style={{ textAlign: 'center', border: '1.5px solid #e2e8f0' }}>
+                  <td style={{ textAlign: 'center', border: '1px solid #e2e8f0' }}>
                     <div className="screen-only">
                       <input type="number" value={item.cantidad} onChange={(e) => actualizarItem(index, 'cantidad', e.target.value)} style={{ width: '55px', padding: '0.4rem', textAlign: 'center', border: '1px solid #cbd5e1' }} />
                     </div>
                     <div className="print-only" style={{ fontWeight: 'bold' }}>{item.cantidad}</div>
                   </td>
-                  <td style={{ padding: '0.4rem', border: '1.5px solid #e2e8f0' }}>
+                  <td style={{ padding: '0.4rem', border: '1px solid #e2e8f0' }}>
                     <div className="screen-only">
                       <input type="text" value={item.descripcion} onChange={(e) => actualizarItem(index, 'descripcion', e.target.value)} style={{ width: '100%', padding: '0.4rem', border: '1px solid #cbd5e1', borderRadius: '0.3rem' }} />
                     </div>
                     <div className="print-only">{item.descripcion}</div>
                   </td>
-                  <td style={{ textAlign: 'center', border: '1.5px solid #e2e8f0' }}>
+                  <td style={{ textAlign: 'center', border: '1px solid #e2e8f0' }}>
                     <div className="screen-only">
                       <input type="number" value={item.precioUnitario} onChange={(e) => actualizarItem(index, 'precioUnitario', e.target.value)} style={{ width: '100%', padding: '0.4rem', textAlign: 'center', border: 'none' }} />
                     </div>
                     <div className="print-only">{item.precioUnitario.toFixed(2)}</div>
                   </td>
-                  <td style={{ textAlign: 'center', border: '1.5px solid #e2e8f0', fontWeight: 'bold', color: '#1e3a5f' }}>
+                  <td style={{ textAlign: 'center', border: '1px solid #e2e8f0', fontWeight: 'bold' }}>
                     <div className="screen-only" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
                       <span>{item.total.toFixed(2)}</span>
-                      <button onClick={() => eliminarItem(index)} style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer' }}>✕</button>
+                      <button onClick={() => eliminarItem(index)} style={{ color: '#ef4444', border: 'none', background: 'none' }}>✕</button>
                     </div>
                     <div className="print-only">{item.total.toFixed(2)}</div>
                   </td>
@@ -149,38 +149,38 @@ export default function CotizadorProfesional() {
           </table>
         </div>
 
-        {/* Footer */}
+        {/* Footer ORIGINAL */}
         <div style={{ padding: '1rem 1.5rem', background: '#f8fafc', borderTop: '2.5px solid #1e3a5f' }}>
           <div style={{ textAlign: 'right', marginBottom: '0.2rem' }}>
-            <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR: </span>
+            <span style={{ fontSize: '1rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR: </span>
             <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#2d5a8c' }}>S/ </span>
-            <span style={{ fontSize: '2.2rem', fontWeight: 'bold', color: '#2d5a8c', lineHeight: 1 }}>{totalGeneral.toFixed(2)}</span>
+            <span style={{ fontSize: '2.4rem', fontWeight: 'bold', color: '#2d5a8c', lineHeight: 1 }}>{totalGeneral.toFixed(2)}</span>
           </div>
           <p style={{ textAlign: 'right', fontSize: '0.8rem', fontStyle: 'italic', margin: '0 0 1rem 0', color: '#64748b' }}>⏰ Válido por 7 días</p>
           <div className="cuentas-bancarias" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.8rem', borderTop: '1.5px solid #e2e8f0', paddingTop: '0.8rem' }}>
             <div style={{ fontSize: '0.85rem' }}><b>BCP Soles:</b><br/>19138313291092</div>
             <div style={{ fontSize: '0.85rem' }}><b>BCP Inter:</b><br/>002-19113831329109257</div>
             <div style={{ fontSize: '0.85rem' }}><b>BBVA:</b><br/>0011-0614-0200143068</div>
-            <div style={{ fontSize: '0.85rem' }}><b>Yape:</b><br/><span style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>964194540</span></div>
+            <div style={{ fontSize: '0.85rem' }}><b>Yape:</b><br/><span style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#1e3a5f' }}>964194540</span></div>
           </div>
         </div>
 
-        {/* Controles Pantalla */}
-        <div className="screen-only" style={{ padding: '1.2rem', backgroundColor: '#f1f5f9', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-          <button onClick={agregarItem} style={{ padding: '0.7rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', fontWeight: 'bold', borderRadius: '0.4rem' }}>+ Agregar producto</button>
-          <button onClick={guardarPDF} style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', fontWeight: 'bold', borderRadius: '0.4rem' }}>💾 Guardar PDF / Historial</button>
-          <button onClick={nuevaCotizacion} style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem' }}>🔄 Nueva</button>
-          <button onClick={() => { if(confirm('¿Limpiar historial?')) { localStorage.removeItem('historial_rodrigo'); setHistorial([]); }}} style={{ padding: '0.7rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.4rem' }}>🗑️ Limpiar Historial</button>
+        {/* Controles ORIGINALES */}
+        <div className="screen-only" style={{ padding: '1.5rem', backgroundColor: '#f1f5f9', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+          <button onClick={agregarItem} style={{ padding: '0.8rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', fontWeight: 'bold', borderRadius: '0.5rem' }}>+ Agregar producto</button>
+          <button onClick={guardarPDF} style={{ padding: '0.8rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', fontWeight: 'bold', borderRadius: '0.5rem' }}>💾 Guardar PDF / Historial</button>
+          <button onClick={nuevaCotizacion} style={{ padding: '0.8rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.5rem' }}>🔄 Nueva</button>
+          <button onClick={() => { if(confirm('¿Limpiar historial?')) { localStorage.removeItem('historial_rodrigo'); setHistorial([]); }}} style={{ padding: '0.8rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.5rem' }}>🗑️ Limpiar Historial</button>
         </div>
       </div>
 
-      {/* Historial Pantalla */}
+      {/* Historial ORIGINAL - Solo pantalla */}
       <div className="screen-only" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white' }}>
         <h3 style={{ borderBottom: '2px solid #1e3a5f', color: '#1e3a5f' }}>📋 Historial de Ventas</h3>
         {historial.map((h, i) => (
           <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.6rem', borderBottom: '1px solid #f1f5f9' }}>
-            <span>{h.proforma} - {h.cliente}</span>
-            <span style={{ fontWeight: 'bold' }}>S/ {h.total}</span>
+            <span style={{ fontWeight: '500' }}>{h.proforma} - {h.cliente}</span>
+            <span style={{ fontWeight: 'bold', color: '#059669' }}>S/ {h.total}</span>
           </div>
         ))}
       </div>
@@ -188,8 +188,8 @@ export default function CotizadorProfesional() {
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
           @page { size: auto; margin: 0; }
-          html, body { height: 100%; overflow: hidden; margin: 0 !important; padding: 0 !important; }
-          .screen-only { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; }
+          html, body { height: 99vh !important; overflow: hidden !important; }
+          .screen-only { display: none !important; }
           .print-only { display: block !important; }
           .contenedor-principal { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; padding: 1.5cm !important; }
           .header-diseno { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
