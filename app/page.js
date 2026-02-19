@@ -165,4 +165,41 @@ export default function CotizadorProfesional() {
           <button onClick={agregarItem} style={{ padding: '0.7rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', fontWeight: 'bold', borderRadius: '0.4rem' }}>+ Agregar producto</button>
           <button onClick={guardarPDF} style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', fontWeight: 'bold', borderRadius: '0.4rem' }}>💾 Guardar PDF / Historial</button>
           <button onClick={nuevaCotizacion} style={{ padding: '0.7rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.4rem' }}>🔄 Nueva</button>
-          <button onClick={() => { if(confirm('¿Limpiar historial?')) { localStorage.removeItem('historial_rodrigo'); setHistorial([]); }}} style={{ padding: '0.7rem', backgroundColor: '#ef4444', color: 'white', border:
+          <button onClick={() => { if(confirm('¿Limpiar historial?')) { localStorage.removeItem('historial_rodrigo'); setHistorial([]); }}} style={{ padding: '0.7rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.4rem' }}>🗑️ Limpiar Historial</button>
+        </div>
+      </div>
+
+      <div className="screen-only" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white' }}>
+        <h3 style={{ borderBottom: '2px solid #1e3a5f', color: '#1e3a5f' }}>📋 Historial de Ventas</h3>
+        <table style={{ width: '100%', marginTop: '1rem', fontSize: '0.9rem' }}>
+          <tbody>
+            {historial.map((h, i) => (
+              <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                <td style={{ padding: '0.6rem' }}>{h.proforma} - {h.cliente}</td>
+                <td style={{ textAlign: 'right', fontWeight: 'bold' }}>S/ {h.total}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @media print {
+          @page { size: auto; margin: 0; }
+          html, body { height: 100%; margin: 0 !important; padding: 0 !important; overflow: hidden; }
+          .screen-only { display: none !important; }
+          .contenedor-principal { 
+            height: 100% !important; 
+            max-width: 100% !important; 
+            margin: 0 !important; 
+            padding: 2cm !important; /* Ajusta este margen si se corta el logo */
+            box-shadow: none !important;
+            page-break-after: avoid !important;
+          }
+          .header-diseno { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%) !important; color: white !important; -webkit-print-color-adjust: exact; }
+          th { background-color: #1e3a5f !important; color: white !important; -webkit-print-color-adjust: exact; }
+        }
+      `}} />
+    </div>
+  )
+}
