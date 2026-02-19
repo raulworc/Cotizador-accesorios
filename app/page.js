@@ -70,7 +70,7 @@ export default function CotizadorProfesional() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', paddingBottom: '2rem' }}>
       <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
-        {/* Header Ajustado */}
+        {/* Header con diseño profesional */}
         <div className="header-diseno" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1rem', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -104,15 +104,15 @@ export default function CotizadorProfesional() {
           <div className="print-only" style={{ fontSize: '1rem', fontWeight: 'bold', color: '#1e293b' }}>{cliente || '---'}</div>
         </div>
 
-        {/* Tabla */}
+        {/* Tabla con Espacios Ajustados */}
         <div style={{ padding: '1rem 1.5rem' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #e2e8f0' }}>
             <thead>
               <tr style={{ background: '#1e3a5f', color: 'white' }}>
-                <th style={{ padding: '0.6rem', width: '70px', border: '1px solid #2d5a8c', fontSize: '0.85rem' }}>CANT.</th>
-                <th style={{ textAlign: 'left', padding: '0.6rem', border: '1px solid #2d5a8c', fontSize: '0.85rem' }}>DESCRIPCIÓN</th>
-                <th style={{ width: '100px', padding: '0.6rem', border: '1px solid #2d5a8c', fontSize: '0.85rem' }}>P.U.</th>
-                <th style={{ width: '130px', padding: '0.6rem', border: '1px solid #2d5a8c', fontSize: '0.85rem' }}>TOTAL</th>
+                <th style={{ padding: '0.6rem', width: '70px', border: '1px solid #2d5a8c', fontSize: '0.8rem' }}>CANT.</th>
+                <th style={{ textAlign: 'left', padding: '0.6rem', border: '1px solid #2d5a8c', fontSize: '0.8rem' }}>DESCRIPCIÓN</th>
+                <th style={{ width: '75px', padding: '0.6rem', border: '1px solid #2d5a8c', fontSize: '0.8rem' }}>P.U.</th>
+                <th style={{ width: '120px', padding: '0.6rem', border: '1px solid #2d5a8c', fontSize: '0.8rem' }}>TOTAL</th>
               </tr>
             </thead>
             <tbody>
@@ -123,19 +123,19 @@ export default function CotizadorProfesional() {
                   <tr key={index} style={{ backgroundColor: index % 2 === 0 ? 'white' : '#f8fafc' }}>
                     <td style={{ textAlign: 'center', border: '1px solid #e2e8f0' }}>
                       <input type="number" value={item.cantidad} onChange={(e) => actualizarItem(index, 'cantidad', e.target.value)} className="screen-only" style={{ width: '55px', padding: '0.4rem', textAlign: 'center', border: '1px solid #cbd5e1' }} />
-                      <span className="print-only" style={{ fontSize: '0.9rem' }}>{item.cantidad}</span>
+                      <span className="print-only" style={{ fontSize: '0.85rem' }}>{item.cantidad}</span>
                     </td>
                     <td style={{ padding: '0.4rem', border: '1px solid #e2e8f0' }}>
                       <input type="text" value={item.descripcion} onChange={(e) => actualizarItem(index, 'descripcion', e.target.value)} className="screen-only" style={{ width: '100%', padding: '0.4rem', border: '1px solid #cbd5e1', borderRadius: '0.3rem' }} />
-                      <span className="print-only" style={{ fontSize: '0.9rem' }}>{item.descripcion}</span>
+                      <span className="print-only" style={{ fontSize: '0.85rem' }}>{item.descripcion}</span>
                     </td>
                     <td style={{ textAlign: 'center', border: '1px solid #e2e8f0' }}>
-                      <input type="number" value={item.precioUnitario} onChange={(e) => actualizarItem(index, 'precioUnitario', e.target.value)} className="screen-only" style={{ width: '80px', padding: '0.4rem', textAlign: 'center', border: '1px solid #cbd5e1' }} />
-                      <span className="print-only" style={{ fontSize: '0.9rem' }}>{item.precioUnitario.toFixed(2)}</span>
+                      <input type="number" value={item.precioUnitario} onChange={(e) => actualizarItem(index, 'precioUnitario', e.target.value)} className="screen-only" style={{ width: '100%', padding: '0.4rem', textAlign: 'center', border: 'none' }} />
+                      <span className="print-only" style={{ fontSize: '0.85rem' }}>{item.precioUnitario.toFixed(2)}</span>
                     </td>
                     <td style={{ textAlign: 'center', border: '1px solid #e2e8f0', fontWeight: 'bold', color: '#1e3a5f' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontSize: '1rem' }}>{item.total.toFixed(2)}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+                        <span style={{ fontSize: '0.95rem' }}>{item.total.toFixed(2)}</span>
                         <button onClick={() => eliminarItem(index)} className="screen-only" style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer' }}>✕</button>
                       </div>
                     </td>
@@ -146,18 +146,23 @@ export default function CotizadorProfesional() {
           </table>
         </div>
 
-        {/* Footer Ajustado: Totales y Cuentas más grandes */}
+        {/* Footer Ajustado (Neuromarketing: Reduce dolor del pago + Validez) */}
         <div style={{ padding: '1rem 1.5rem', background: '#f8fafc', borderTop: '2px solid #2d5a8c' }}>
-          <div style={{ textAlign: 'right', marginBottom: '0.8rem' }}>
-            <span style={{ fontSize: '1rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR: </span>
-            <span style={{ fontSize: '1.6rem', fontWeight: 'bold', color: '#2d5a8c' }}>S/ {totalGeneral.toFixed(2)}</span>
+          <div style={{ textAlign: 'right', marginBottom: '0.2rem' }}>
+            <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR: </span>
+            {/* Símbolo S/ más pequeño y monto más grande (Tip #4) */}
+            <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#2d5a8c' }}>S/ </span>
+            <span style={{ fontSize: '2.2rem', fontWeight: 'bold', color: '#2d5a8c', lineHeight: 1 }}>{totalGeneral.toFixed(2)}</span>
+          </div>
+          <div style={{ textAlign: 'right', fontSize: '0.75rem', color: '#64748b', marginBottom: '0.8rem', fontStyle: 'italic' }}>
+            ⏰ Válido por 7 días
           </div>
           
           <div className="cuentas-bancarias" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.8rem', borderTop: '1px solid #e2e8f0', paddingTop: '0.8rem' }}>
-            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Soles:</b><br/><span style={{ fontSize: '0.9rem' }}>19138313291092</span></div>
-            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Inter:</b><br/><span style={{ fontSize: '0.9rem' }}>002-19113831329109257</span></div>
-            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BBVA:</b><br/><span style={{ fontSize: '0.9rem' }}>0011-0614-0200143068</span></div>
-            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>Yape:</b><br/><span style={{ fontSize: '1rem', fontWeight: 'bold' }}>964194540</span></div>
+            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Soles:</b><br/><span style={{ fontSize: '0.95rem', fontWeight: '500' }}>19138313291092</span></div>
+            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Inter:</b><br/><span style={{ fontSize: '0.95rem', fontWeight: '500' }}>002-19113831329109257</span></div>
+            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BBVA:</b><br/><span style={{ fontSize: '0.95rem', fontWeight: '500' }}>0011-0614-0200143068</span></div>
+            <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>Yape:</b><br/><span style={{ fontSize: '1.05rem', fontWeight: 'bold', color: '#1e3a5f' }}>964194540</span></div>
           </div>
         </div>
 
