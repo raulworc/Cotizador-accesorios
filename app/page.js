@@ -173,6 +173,7 @@ export default function CotizadorProfesional() {
         </div>
       </div>
 
+      {/* Historial - CLAVE: Clase "historial-seccion" para borrarlo en impresión */}
       <div className="screen-only historial-seccion" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white' }}>
         <h3 style={{ borderBottom: '2px solid #1e3a5f', color: '#1e3a5f' }}>📋 Historial de Ventas</h3>
         <table style={{ width: '100%', marginTop: '1rem', fontSize: '0.9rem' }}>
@@ -190,12 +191,38 @@ export default function CotizadorProfesional() {
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
           @page { margin: 0; size: auto; }
-          body { margin: 1cm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-          .screen-only, .historial-seccion { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
+          html, body { 
+            height: 100%; 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            overflow: hidden !important; 
+          }
+          .screen-only, .historial-seccion { 
+            display: none !important; 
+            visibility: hidden !important; 
+            height: 0 !important; 
+            overflow: hidden !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+          }
           .print-only { display: block !important; }
-          .contenedor-principal { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; }
-          .header-diseno { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%) !important; color: white !important; -webkit-print-color-adjust: exact; }
-          th { background-color: #1e3a5f !important; color: white !important; -webkit-print-color-adjust: exact; }
+          .contenedor-principal { 
+            box-shadow: none !important; 
+            margin: 0 !important; 
+            width: 100% !important; 
+            max-width: none !important;
+            padding: 1.5cm !important; /* Ajusta este margen para que no se corte */
+          }
+          .header-diseno { 
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%) !important; 
+            color: white !important; 
+            -webkit-print-color-adjust: exact; 
+          }
+          th { 
+            background-color: #1e3a5f !important; 
+            color: white !important; 
+            -webkit-print-color-adjust: exact; 
+          }
         }
         @media screen { .print-only { display: none !important; } }
       `}} />
