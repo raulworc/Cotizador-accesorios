@@ -67,7 +67,7 @@ export default function CotizadorProfesional() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', paddingBottom: '2rem' }}>
+    <div style={{ minHeight: 'auto', backgroundColor: '#f8fafc', paddingBottom: '2rem' }}>
       <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
         {/* Header */}
