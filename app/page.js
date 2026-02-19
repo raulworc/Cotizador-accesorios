@@ -70,14 +70,14 @@ export default function CotizadorProfesional() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', paddingBottom: '2rem' }}>
       <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
-        {/* Header */}
+        {/* Header - Accesorios Rodrigo */}
         <div className="header-diseno" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1.2rem', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ backgroundColor: 'white', padding: '0.4rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center' }}>
                 <img src={logoUrl} alt="Accesorios Rodrigo" style={{ height: '55px', width: 'auto' }} />
               </div>
-              <div style={{ fontSize: '0.75rem', lineHeight: '1.4' }}>
+              <div className="info-contacto" style={{ fontSize: '0.75rem', lineHeight: '1.4' }}>
                 <p style={{ margin: 0 }}>📍 C. Central Km12.5 Lt 67, Ate, Lima</p>
                 <p style={{ margin: 0 }}>📞 964194540 | ✉️ olga231702@gmail.com</p>
               </div>
@@ -92,7 +92,7 @@ export default function CotizadorProfesional() {
 
         {/* Cliente */}
         <div style={{ padding: '0.8rem 1.2rem', backgroundColor: '#f1f5f9', borderBottom: '2px solid #e2e8f0' }}>
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#1e3a5f', marginBottom: '0.3rem' }}>CLIENTE</label>
+          <label className="screen-only" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#1e3a5f', marginBottom: '0.3rem' }}>CLIENTE</label>
           <input
             type="text"
             value={cliente}
@@ -101,10 +101,10 @@ export default function CotizadorProfesional() {
             placeholder="Nombre del cliente"
             style={{ width: '100%', padding: '0.6rem', border: '2px solid #cbd5e1', borderRadius: '0.4rem' }}
           />
-          <div className="print-only" style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#1e293b' }}>{cliente || '---'}</div>
+          <div className="print-only" style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#1e293b' }}>CLIENTE: {cliente || '---'}</div>
         </div>
 
-        {/* Tabla con BORDES REFORZADOS */}
+        {/* Tabla - Sin números encimados */}
         <div style={{ padding: '1.2rem' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', border: '2.5px solid #1e3a5f' }}>
             <thead>
@@ -142,8 +142,8 @@ export default function CotizadorProfesional() {
           </table>
         </div>
 
-        {/* Footer (Neuromarketing: S/ Pequeño) */}
-        <div id="footer-print" style={{ padding: '1rem 1.5rem', background: '#f8fafc', borderTop: '2.5px solid #1e3a5f' }}>
+        {/* Footer de Cuentas */}
+        <div id="no-extra-page" style={{ padding: '1rem 1.5rem', background: '#f8fafc', borderTop: '2.5px solid #1e3a5f' }}>
           <div style={{ textAlign: 'right', marginBottom: '0.3rem' }}>
             <span style={{ fontSize: '1rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR: </span>
             <span style={{ fontSize: '1rem', fontWeight: 'bold', color: '#2d5a8c' }}>S/ </span>
@@ -158,22 +158,22 @@ export default function CotizadorProfesional() {
           </div>
         </div>
 
-        {/* Controles */}
+        {/* Botones */}
         <div className="screen-only" style={{ padding: '1.5rem', backgroundColor: '#f1f5f9', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
-          <button onClick={agregarItem} style={{ padding: '0.8rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', fontWeight: 'bold', borderRadius: '0.5rem', cursor: 'pointer' }}>+ Agregar producto</button>
-          <button onClick={guardarPDF} style={{ padding: '0.8rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', fontWeight: 'bold', borderRadius: '0.5rem', cursor: 'pointer' }}>💾 Guardar PDF / Historial</button>
+          <button onClick={agregarItem} style={{ padding: '0.8rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', fontWeight: 'bold', borderRadius: '0.5rem' }}>+ Agregar producto</button>
+          <button onClick={guardarPDF} style={{ padding: '0.8rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', fontWeight: 'bold', borderRadius: '0.5rem' }}>💾 Guardar PDF / Historial</button>
           <button onClick={nuevaCotizacion} style={{ padding: '0.8rem', backgroundColor: '#64748b', color: 'white', border: 'none', borderRadius: '0.5rem' }}>🔄 Nueva</button>
-          <button onClick={() => { if(confirm('¿Limpiar historial?')) { localStorage.removeItem('historial_rodrigo'); setHistorial([]); }}} style={{ padding: '0.8rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.5rem' }}>🗑️ Limpiar Historial</button>
+          <button onClick={() => { if(confirm('¿Limpiar?')) { localStorage.removeItem('historial_rodrigo'); setHistorial([]); }}} style={{ padding: '0.7rem', backgroundColor: '#ef4444', color: 'white', borderRadius: '0.4rem' }}>🗑️ Limpiar Historial</button>
         </div>
       </div>
 
-      {/* Historial - NO EXISTE PARA LA IMPRESORA */}
-      <div className="screen-only no-render-print" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white', borderRadius: '0.5rem' }}>
-        <h3 style={{ borderBottom: '2px solid #1e3a5f', color: '#1e3a5f', paddingBottom: '0.5rem' }}>📋 Historial de Ventas</h3>
+      {/* Historial - No se imprime nunca */}
+      <div className="screen-only no-print-section" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white' }}>
+        <h3 style={{ borderBottom: '2px solid #1e3a5f', color: '#1e3a5f' }}>📋 Historial de Ventas</h3>
         {historial.map((h, i) => (
           <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.6rem', borderBottom: '1px solid #f1f5f9' }}>
-            <span style={{ fontWeight: '500' }}>{h.proforma} - {h.cliente}</span>
-            <span style={{ fontWeight: 'bold', color: '#059669' }}>S/ {h.total}</span>
+            <span>{h.proforma} - {h.cliente}</span>
+            <span style={{ fontWeight: 'bold' }}>S/ {h.total}</span>
           </div>
         ))}
       </div>
@@ -181,13 +181,13 @@ export default function CotizadorProfesional() {
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
           @page { size: auto; margin: 0; }
-          html, body { height: 99vh !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; }
-          .screen-only, .no-render-print { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; position: absolute !important; }
+          html, body { height: 99vh !important; overflow: hidden !important; }
+          .screen-only, .no-print-section { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; position: absolute !important; }
           .print-only { display: block !important; }
-          .contenedor-principal { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; height: auto !important; padding: 1.5cm 1.5cm 0 1.5cm !important; }
-          .header-diseno { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; border-bottom: 2px solid #1e3a5f !important; }
+          .contenedor-principal { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; height: auto !important; padding: 1.2cm !important; }
+          .header-diseno { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
           th { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-          #footer-print { page-break-after: avoid !important; }
+          #no-extra-page { page-break-after: avoid !important; }
         }
         @media screen { .print-only { display: none !important; } }
       `}} />
