@@ -70,6 +70,7 @@ export default function CotizadorProfesional() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', paddingBottom: '2rem' }}>
       <div id="cotizacion-pdf" className="contenedor-principal" style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
+        {/* Header */}
         <div className="header-diseno" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%)', padding: '1rem', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -89,6 +90,7 @@ export default function CotizadorProfesional() {
           </div>
         </div>
 
+        {/* Sección Cliente */}
         <div style={{ padding: '0.8rem 1.2rem', backgroundColor: '#f1f5f9', borderBottom: '2px solid #e2e8f0' }}>
           <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', color: '#1e3a5f', marginBottom: '0.2rem' }}>CLIENTE</label>
           <input
@@ -102,6 +104,7 @@ export default function CotizadorProfesional() {
           <div className="print-only" style={{ fontSize: '1rem', fontWeight: 'bold', color: '#1e293b' }}>{cliente || '---'}</div>
         </div>
 
+        {/* Tabla */}
         <div style={{ padding: '1rem 1.5rem' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #e2e8f0' }}>
             <thead>
@@ -143,6 +146,7 @@ export default function CotizadorProfesional() {
           </table>
         </div>
 
+        {/* Footer */}
         <div style={{ padding: '1rem 1.5rem', background: '#f8fafc', borderTop: '2px solid #2d5a8c' }}>
           <div style={{ textAlign: 'right', marginBottom: '0.2rem' }}>
             <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#1e3a5f' }}>TOTAL A PAGAR: </span>
@@ -152,7 +156,6 @@ export default function CotizadorProfesional() {
           <div style={{ textAlign: 'right', fontSize: '0.75rem', color: '#64748b', marginBottom: '0.8rem', fontStyle: 'italic' }}>
             ⏰ Válido por 7 días
           </div>
-          
           <div className="cuentas-bancarias" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.8rem', borderTop: '1px solid #e2e8f0', paddingTop: '0.8rem' }}>
             <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Soles:</b><br/>19138313291092</div>
             <div style={{ fontSize: '0.85rem', lineHeight: '1.2' }}><b>BCP Inter:</b><br/>002-19113831329109257</div>
@@ -161,6 +164,7 @@ export default function CotizadorProfesional() {
           </div>
         </div>
 
+        {/* Controles */}
         <div className="screen-only" style={{ padding: '1.2rem', backgroundColor: '#f1f5f9', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
           <button onClick={agregarItem} style={{ padding: '0.7rem', backgroundColor: 'white', color: '#2d5a8c', border: '2px solid #2d5a8c', fontWeight: 'bold', borderRadius: '0.4rem' }}>+ Agregar producto</button>
           <button onClick={guardarPDF} style={{ padding: '0.7rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', fontWeight: 'bold', borderRadius: '0.4rem' }}>💾 Guardar PDF / Historial</button>
@@ -169,7 +173,8 @@ export default function CotizadorProfesional() {
         </div>
       </div>
 
-      <div className="screen-only" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white' }}>
+      {/* Historial - CLAVE: Clase "historial-seccion" para borrarlo en impresión */}
+      <div className="screen-only historial-seccion" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '1.5rem', backgroundColor: 'white' }}>
         <h3 style={{ borderBottom: '2px solid #1e3a5f', color: '#1e3a5f' }}>📋 Historial de Ventas</h3>
         <table style={{ width: '100%', marginTop: '1rem', fontSize: '0.9rem' }}>
           <tbody>
@@ -185,20 +190,15 @@ export default function CotizadorProfesional() {
 
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
-          @page { size: auto; margin: 0; }
-          html, body { height: 100%; margin: 0 !important; padding: 0 !important; overflow: hidden; }
-          .screen-only { display: none !important; }
-          .contenedor-principal { 
-            height: 100% !important; 
-            max-width: 100% !important; 
-            margin: 0 !important; 
-            padding: 2cm !important; /* Ajusta este margen si se corta el logo */
-            box-shadow: none !important;
-            page-break-after: avoid !important;
-          }
+          @page { margin: 0; size: auto; }
+          body { margin: 1cm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          .screen-only, .historial-seccion { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
+          .print-only { display: block !important; }
+          .contenedor-principal { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; }
           .header-diseno { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%) !important; color: white !important; -webkit-print-color-adjust: exact; }
           th { background-color: #1e3a5f !important; color: white !important; -webkit-print-color-adjust: exact; }
         }
+        @media screen { .print-only { display: none !important; } }
       `}} />
     </div>
   )
